@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by nqminh on 11/09/2018.
@@ -16,11 +17,13 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     AudioManager audioManager;
     static SharedPreferences settings;
+    Context mContext;
 
     boolean silent;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mContext = context;
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         settings = context.getSharedPreferences("data", Context.MODE_PRIVATE);
 
@@ -99,6 +102,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     Log.d("TAG", "Error!");
             }
         }
+        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
     }
 
 }
