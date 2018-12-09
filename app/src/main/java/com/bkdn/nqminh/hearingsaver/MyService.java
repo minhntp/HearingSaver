@@ -1,5 +1,6 @@
 package com.bkdn.nqminh.hearingsaver;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,32 +9,33 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+@TargetApi(Build.VERSION_CODES.O)
 public class MyService extends Service {
 //    private static final int NOTIFICATION_ID = 96;
 //    private static final String CHANNEL_ID = "CN-HS";
 //    private Notification notification;
 //    private Notification.Builder mBuilder;
 
+    private static final int NOTIFICATION_ID = 1;
+    private static final String CHANNEL_ID = "channel-hearing-saver";
+    private static final String CHANNEL_NAME = "Service is running";
     IntentFilter receiverFilter;
     MyBroadcastReceiver receiverBroadcast;
     Context appCxt;
+    Notification.Builder mBuilder;
+    NotificationChannel mNotificationChannel;
+    NotificationManager mNotificationManager;
 
-    NotificationCompat.Builder mBuilder;
-    private static final String CHANNEL_ID = "CN-HS";
     PendingIntent contentIntent;
 
     public MyService(Context applicationContext) {
         appCxt = applicationContext;
-        Log.d("HERE","Here I am!");
+        Log.d("HERE", "Here I am!");
     }
 
     public MyService() {
@@ -42,15 +44,28 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mNotificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH);
+
         contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+
+        mBuilder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
 //                .setContentTitle("Service is running")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(contentIntent);
+                .setPriority(Notification.PRIORITY_MAX)
+                .setContentIntent(contentIntent)
+                .setChannelId(CHANNEL_ID);
 
-        startForeground(1, mBuilder.build());
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.createNotificationChannel(mNotificationChannel);
+
+        startForeground(NOTIFICATION_ID, mBuilder.build());
+        Toast.makeText(getApplicationContext(), "Notification created!", Toast.LENGTH_SHORT)
+                .show();
+        receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        receiverBroadcast = new MyBroadcastReceiver();
+        registerReceiver(receiverBroadcast, receiverFilter);
     }
 
     @Override
@@ -58,9 +73,6 @@ public class MyService extends Service {
 //        startForeground(NOTIFICATION_ID, notification);
         super.onStartCommand(intent, flags, startId);
 
-        receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        receiverBroadcast = new MyBroadcastReceiver();
-        registerReceiver(receiverBroadcast, receiverFilter);
 
         return START_STICKY;
     }

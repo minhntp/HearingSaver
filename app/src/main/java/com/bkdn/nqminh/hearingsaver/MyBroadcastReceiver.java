@@ -3,7 +3,6 @@ package com.bkdn.nqminh.hearingsaver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.util.Log;
@@ -15,8 +14,8 @@ import android.widget.Toast;
 
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
-    AudioManager audioManager;
     static SharedPreferences settings;
+    AudioManager audioManager;
     Context mContext;
 
     boolean silent;
@@ -27,7 +26,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         settings = context.getSharedPreferences("data", Context.MODE_PRIVATE);
 
-        if((audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) ||
+        if ((audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) ||
                 (audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)) {
             silent = true;
         } else {
@@ -41,7 +40,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
             int state = intent.getIntExtra("state", -1);
             switch (state) {
                 case (0):
-                    if(!silent) {
+                    if (!silent) {
                         Log.d("TAG", "Headset unplugged!");
                         if (settings.getBoolean("check2", true)) {
                             audioManager.setStreamVolume(
@@ -70,7 +69,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     }
                     break;
                 case (1):
-                    if(!silent) {
+                    if (!silent) {
                         Log.d("TAG", "Headset plugged!");
                         if (settings.getBoolean("check1", true)) {
                             audioManager.setStreamVolume(
@@ -101,8 +100,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 default:
                     Log.d("TAG", "Error!");
             }
+            Toast.makeText(mContext, "Hearing Saver: Volume adjusted!", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
+
     }
 
 }

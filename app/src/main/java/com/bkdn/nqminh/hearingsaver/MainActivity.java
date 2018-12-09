@@ -5,9 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,11 +17,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
     Context context;
-    public Context getContext() {
-        return context;
-    }
-
     CheckBox checkboxRingtonePlugged;
     CheckBox checkboxRingtoneUnpugged;
     CheckBox checkboxNotificationPlugged;
@@ -31,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     CheckBox checkboxFeedbackUnplugged;
     CheckBox checkboxMediaPlugged;
     CheckBox checkboxMediaUnplugged;
-
     SeekBar seekbarRingtonePlugged;
     SeekBar seekbarRingtoneUnplugged;
     SeekBar seekbarNotificationPlugged;
@@ -40,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     SeekBar seekbarFeedbackUnplugged;
     SeekBar seekbarMediaPlugged;
     SeekBar seekbarMediaUnplugged;
-
     TextView textviewRingtonePlugged;
     TextView textviewRingtoneUnplugged;
     TextView textviewNotificationPlugged;
@@ -50,15 +45,14 @@ public class MainActivity extends AppCompatActivity {
     TextView textviewMediaPlugged;
     TextView textviewMediaUnplugged;
     TextView textviewStatus;
-
     Button buttonEnable;
     Button buttonDisable;
-
-    static SharedPreferences settings;
-    static SharedPreferences.Editor editor;
-
     Intent mServiceIntent;
     private MyService mMyService;
+
+    public Context getContext() {
+        return context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i ("isMyServiceRunning?", true + "");
+                Log.i("isMyServiceRunning?", true + "");
                 return true;
             }
         }
-        Log.i ("isMyServiceRunning?", false + "");
+        Log.i("isMyServiceRunning?", false + "");
         return false;
     }
 
@@ -157,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         textviewMediaPlugged.setText("" + seekbarMediaPlugged.getProgress());
         textviewMediaUnplugged.setText("" + seekbarMediaUnplugged.getProgress());
 
-        if(isMyServiceRunning(mMyService.getClass())) {
+        if (isMyServiceRunning(mMyService.getClass())) {
             textviewStatus.setText("Service is running!");
         } else {
             textviewStatus.setText("Service is not running!");
@@ -310,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putBoolean("disable", false);
                 editor.commit();
                 saveStatus();
-                if(isMyServiceRunning(mMyService.getClass())) {
+                if (isMyServiceRunning(mMyService.getClass())) {
                     textviewStatus.setText("Service is running!");
                 } else {
                     textviewStatus.setText("Service is not running!");
@@ -321,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 saveStatus();
                 editor.putBoolean("disable", true);
                 editor.commit();
-                if(isMyServiceRunning(mMyService.getClass())) {
+                if (isMyServiceRunning(mMyService.getClass())) {
                     textviewStatus.setText("Service is running!");
                 } else {
                     textviewStatus.setText("Service is not running!");
@@ -330,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.button_save:
                 saveStatus();
                 Toast.makeText(this, "Settings saved!", Toast.LENGTH_SHORT).show();
-                if(isMyServiceRunning(mMyService.getClass())) {
+                if (isMyServiceRunning(mMyService.getClass())) {
                     textviewStatus.setText("Service is running!");
                 } else {
                     textviewStatus.setText("Service is not running!");

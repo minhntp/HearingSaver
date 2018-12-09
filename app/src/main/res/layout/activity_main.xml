@@ -49,7 +49,7 @@
                     android:id="@+id/checkbox_ringtone_plugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 
@@ -65,15 +65,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_ringtone_plugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <RelativeLayout
@@ -97,7 +97,7 @@
                     android:id="@+id/checkbox_ringtone_unplugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 
@@ -113,15 +113,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_ringtone_unplugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -167,7 +167,7 @@
                     android:id="@+id/checkbox_notification_plugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
             <LinearLayout
@@ -182,15 +182,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_notification_plugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <RelativeLayout
@@ -214,7 +214,7 @@
                     android:id="@+id/checkbox_notification_unplugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 
@@ -230,15 +230,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_notification_unplugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -285,7 +285,7 @@
                     android:id="@+id/checkbox_feedback_plugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
             <LinearLayout
@@ -300,15 +300,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_feedback_plugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <RelativeLayout
@@ -332,7 +332,7 @@
                     android:id="@+id/checkbox_feedback_unplugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 
@@ -348,18 +348,19 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_feedback_unplugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -401,7 +402,7 @@
                     android:id="@+id/checkbox_media_plugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
             <LinearLayout
@@ -416,15 +417,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_media_plugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <RelativeLayout
@@ -448,7 +449,7 @@
                     android:id="@+id/checkbox_media_unplugged"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 
@@ -464,15 +465,15 @@
                     android:layout_height="25dp"
                     android:layout_weight="10"
                     android:max="15"
-                    android:min="0"/>
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/textview_media_unplugged"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -481,20 +482,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="5dp"
+        android:layout_marginRight="30dp"
         android:orientation="horizontal"
         android:weightSum="3">
 
         <Button
-            android:layout_weight="1"
+            android:id="@+id/button_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Save"
-            android:id="@+id/button_save"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:onClick="onButtonClicked"/>
+            android:layout_weight="1"
+            android:onClick="onButtonClicked"
+            android:text="Save" />
+
         <Button
             android:id="@+id/button_enable"
             android:layout_width="0dp"
@@ -515,14 +517,14 @@
             android:onClick="onButtonClicked"
             android:text="Disable" />
     </LinearLayout>
+
     <TextView
+        android:id="@+id/textview_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Service status"
-        android:textSize="@dimen/largeText"
-        android:textColor="@color/green"
         android:gravity="center"
-        android:id="@+id/textview_status"
-        />
+        android:text="Service status"
+        android:textColor="@color/green"
+        android:textSize="@dimen/largeText" />
 </LinearLayout>

@@ -13,24 +13,12 @@
                       <PersistentState>
                         <option name="children">
                           <map>
-                            <entry key="launcherLegacy">
-                              <value>
-                                <PersistentState>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$PROJECT_DIR$/app/src/main/res/drawable/ear.jpg" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                            <entry key="notification">
+                            <entry key="launcher">
                               <value>
                                 <PersistentState>
                                   <option name="children">
                                     <map>
-                                      <entry key="clipArt">
+                                      <entry key="backgroundImage">
                                         <value>
                                           <PersistentState>
                                             <option name="values">
@@ -41,23 +29,26 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
-                                      <entry key="clipartAsset">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="url" value="jar:file:/home/minh/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_hearing_black_24dp.xml" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="foregroundImage" value="D:\AndroidStudioProjects\HearingSaver\app\src\main\res\drawable\ear.PNG" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                            <entry key="launcherLegacy">
+                              <value>
+                                <PersistentState>
+                                  <option name="children">
+                                    <map>
                                       <entry key="image">
                                         <value>
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="paddingPercent" value="-10" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -68,18 +59,13 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="imageAsset" value="$PROJECT_DIR$/app/src/main/res/drawable/ear.jpg" />
-                                      <entry key="outputName" value="ic_notification" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="D:\AndroidStudioProjects\HearingSaver\app\src\main\res\drawable\ear.jpg" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="NOTIFICATION" />
                           </map>
                         </option>
                       </PersistentState>
