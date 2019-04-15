@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textviewMediaPlugged;
     TextView textviewMediaUnplugged;
     TextView textviewStatus;
+    TextView textviewStatus2;
+
     Button buttonEnable;
     Button buttonDisable;
     Intent mServiceIntent;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
         initialize();
         addEvents();
     }
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         mMyService = new MyService(getContext());
         mServiceIntent = new Intent(getContext(), mMyService.getClass());
 //        mServiceIntent = new Intent(getContext(), MyService.class);
-
         connectViews();
         setPreviousStatus();
     }
@@ -91,36 +91,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connectViews() {
-        checkboxRingtonePlugged = (CheckBox) findViewById(R.id.checkbox_ringtone_plugged);
-        checkboxRingtoneUnpugged = (CheckBox) findViewById(R.id.checkbox_ringtone_unplugged);
-        checkboxNotificationPlugged = (CheckBox) findViewById(R.id.checkbox_notification_plugged);
-        checkboxNotificationUnplugged = (CheckBox) findViewById(R.id.checkbox_notification_unplugged);
-        checkboxFeedbackPlugged = (CheckBox) findViewById(R.id.checkbox_feedback_plugged);
-        checkboxFeedbackUnplugged = (CheckBox) findViewById(R.id.checkbox_feedback_unplugged);
-        checkboxMediaPlugged = (CheckBox) findViewById(R.id.checkbox_media_plugged);
-        checkboxMediaUnplugged = (CheckBox) findViewById(R.id.checkbox_media_unplugged);
+        checkboxRingtonePlugged = findViewById(R.id.checkbox_ringtone_plugged);
+        checkboxRingtoneUnpugged = findViewById(R.id.checkbox_ringtone_unplugged);
+        checkboxNotificationPlugged = findViewById(R.id.checkbox_notification_plugged);
+        checkboxNotificationUnplugged = findViewById(R.id.checkbox_notification_unplugged);
+        checkboxFeedbackPlugged = findViewById(R.id.checkbox_feedback_plugged);
+        checkboxFeedbackUnplugged = findViewById(R.id.checkbox_feedback_unplugged);
+        checkboxMediaPlugged = findViewById(R.id.checkbox_media_plugged);
+        checkboxMediaUnplugged = findViewById(R.id.checkbox_media_unplugged);
 
-        seekbarRingtonePlugged = (SeekBar) findViewById(R.id.seekbar_ringtone_plugged);
-        seekbarRingtoneUnplugged = (SeekBar) findViewById(R.id.seekbar_ringtone_unplugged);
-        seekbarNotificationPlugged = (SeekBar) findViewById(R.id.seekbar_notification_plugged);
-        seekbarNotificationUnplugged = (SeekBar) findViewById(R.id.seekbar_notification_unplugged);
-        seekbarFeedbackPlugged = (SeekBar) findViewById(R.id.seekbar_feedback_plugged);
-        seekbarFeedbackUnplugged = (SeekBar) findViewById(R.id.seekbar_feedback_unplugged);
-        seekbarMediaPlugged = (SeekBar) findViewById(R.id.seekbar_media_plugged);
-        seekbarMediaUnplugged = (SeekBar) findViewById(R.id.seekbar_media_unplugged);
+        seekbarRingtonePlugged = findViewById(R.id.seekbar_ringtone_plugged);
+        seekbarRingtoneUnplugged = findViewById(R.id.seekbar_ringtone_unplugged);
+        seekbarNotificationPlugged = findViewById(R.id.seekbar_notification_plugged);
+        seekbarNotificationUnplugged = findViewById(R.id.seekbar_notification_unplugged);
+        seekbarFeedbackPlugged = findViewById(R.id.seekbar_feedback_plugged);
+        seekbarFeedbackUnplugged = findViewById(R.id.seekbar_feedback_unplugged);
+        seekbarMediaPlugged = findViewById(R.id.seekbar_media_plugged);
+        seekbarMediaUnplugged = findViewById(R.id.seekbar_media_unplugged);
 
-        textviewRingtonePlugged = (TextView) findViewById(R.id.textview_ringtone_plugged);
-        textviewRingtoneUnplugged = (TextView) findViewById(R.id.textview_ringtone_unplugged);
-        textviewNotificationPlugged = (TextView) findViewById(R.id.textview_notification_plugged);
-        textviewNotificationUnplugged = (TextView) findViewById(R.id.textview_notification_unplugged);
-        textviewFeedbackPlugged = (TextView) findViewById(R.id.textview_feedback_plugged);
-        textviewFeedbackUnplugged = (TextView) findViewById(R.id.textview_feedback_unplugged);
-        textviewMediaPlugged = (TextView) findViewById(R.id.textview_media_plugged);
-        textviewMediaUnplugged = (TextView) findViewById(R.id.textview_media_unplugged);
-        textviewStatus = (TextView) findViewById(R.id.textview_status);
+        textviewRingtonePlugged = findViewById(R.id.textview_ringtone_plugged);
+        textviewRingtoneUnplugged = findViewById(R.id.textview_ringtone_unplugged);
+        textviewNotificationPlugged = findViewById(R.id.textview_notification_plugged);
+        textviewNotificationUnplugged = findViewById(R.id.textview_notification_unplugged);
+        textviewFeedbackPlugged = findViewById(R.id.textview_feedback_plugged);
+        textviewFeedbackUnplugged = findViewById(R.id.textview_feedback_unplugged);
+        textviewMediaPlugged = findViewById(R.id.textview_media_plugged);
+        textviewMediaUnplugged = findViewById(R.id.textview_media_unplugged);
+        textviewStatus = findViewById(R.id.textview_status);
+        textviewStatus2 = findViewById(R.id.textview_status2);
 
-        buttonEnable = (Button) findViewById(R.id.button_enable);
-        buttonDisable = (Button) findViewById(R.id.button_disable);
+        buttonEnable = findViewById(R.id.button_enable);
+        buttonDisable = findViewById(R.id.button_disable);
     }
 
     private void setPreviousStatus() {
@@ -150,6 +151,19 @@ public class MainActivity extends AppCompatActivity {
         textviewFeedbackUnplugged.setText("" + seekbarFeedbackUnplugged.getProgress());
         textviewMediaPlugged.setText("" + seekbarMediaPlugged.getProgress());
         textviewMediaUnplugged.setText("" + seekbarMediaUnplugged.getProgress());
+
+        if (settings.getBoolean("disable", true)) {
+            textviewStatus2.setText("Service is disabled!");
+            buttonDisable.setEnabled(false);
+        } else {
+            textviewStatus2.setText("Service is enabled!");
+            buttonEnable.setEnabled(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(mServiceIntent);
+            } else {
+                context.startService(mServiceIntent);
+            }
+        }
 
         if (isMyServiceRunning(mMyService.getClass())) {
             textviewStatus.setText("Service is running!");
@@ -292,10 +306,8 @@ public class MainActivity extends AppCompatActivity {
     public void onButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.button_enable:
-//                if (!isMyServiceRunning(mMyService.getClass())) {
-//                    startService(mServiceIntent);
-//                }
-//                startForegroundService(mServiceIntent);
+                buttonEnable.setEnabled(false);
+                buttonDisable.setEnabled(true);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(mServiceIntent);
                 } else {
@@ -303,33 +315,28 @@ public class MainActivity extends AppCompatActivity {
                 }
                 editor.putBoolean("disable", false);
                 editor.commit();
-                saveStatus();
-                if (isMyServiceRunning(mMyService.getClass())) {
-                    textviewStatus.setText("Service is running!");
-                } else {
-                    textviewStatus.setText("Service is not running!");
-                }
                 break;
             case R.id.button_disable:
                 stopService(mServiceIntent);
-                saveStatus();
+                buttonEnable.setEnabled(true);
+                buttonDisable.setEnabled(false);
                 editor.putBoolean("disable", true);
                 editor.commit();
-                if (isMyServiceRunning(mMyService.getClass())) {
-                    textviewStatus.setText("Service is running!");
-                } else {
-                    textviewStatus.setText("Service is not running!");
-                }
                 break;
             case R.id.button_save:
-                saveStatus();
                 Toast.makeText(this, "Settings saved!", Toast.LENGTH_SHORT).show();
-                if (isMyServiceRunning(mMyService.getClass())) {
-                    textviewStatus.setText("Service is running!");
-                } else {
-                    textviewStatus.setText("Service is not running!");
-                }
                 break;
+        }
+        saveStatus();
+        if (isMyServiceRunning(mMyService.getClass())) {
+            textviewStatus.setText("Service is running!");
+        } else {
+            textviewStatus.setText("Service is not running!");
+        }
+        if (settings.getBoolean("disable", true)) {
+            textviewStatus2.setText("Service is disabled!");
+        } else {
+            textviewStatus2.setText("Service is enabled!");
         }
     }
 

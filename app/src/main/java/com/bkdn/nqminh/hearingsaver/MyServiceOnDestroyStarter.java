@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 
-public class MyServiceStarter extends BroadcastReceiver {
+public class MyServiceOnDestroyStarter extends BroadcastReceiver {
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
 
@@ -20,7 +20,6 @@ public class MyServiceStarter extends BroadcastReceiver {
             } else {
                 context.startService(new Intent(context, MyService.class));
             }
-        } else {
         }
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -14,34 +13,22 @@ import android.widget.Toast;
 
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
-    static SharedPreferences settings;
+    SharedPreferences settings;
     AudioManager audioManager;
-    Context mContext;
-
-    boolean silent;
+    boolean isSilentOrVibrate;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        mContext = context;
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        settings = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-
-        if ((audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) ||
-                (audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)) {
-            silent = true;
-        } else {
-            silent = false;
-        }
-        readStateAndChangeVolumes(intent);
-    }
-
-    private void readStateAndChangeVolumes(Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+        if (Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())) {
             int state = intent.getIntExtra("state", -1);
+            settings = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+            audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            isSilentOrVibrate = (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) ||
+                    (audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT);
+
             switch (state) {
                 case (0):
-                    if (!silent) {
-                        Log.d("TAG", "Headset unplugged!");
+                    if (!isSilentOrVibrate) {
                         if (settings.getBoolean("check2", true)) {
                             audioManager.setStreamVolume(
                                     AudioManager.STREAM_RING,
@@ -69,8 +56,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     }
                     break;
                 case (1):
-                    if (!silent) {
-                        Log.d("TAG", "Headset plugged!");
+                    if (!isSilentOrVibrate) {
                         if (settings.getBoolean("check1", true)) {
                             audioManager.setStreamVolume(
                                     AudioManager.STREAM_RING,
@@ -98,11 +84,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                     }
                     break;
                 default:
-                    Log.d("TAG", "Error!");
+                    Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(mContext, "Hearing Saver: Volume adjusted!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Volume adjusted!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
 }

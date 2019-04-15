@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class MyService extends Service {
@@ -53,7 +52,6 @@ public class MyService extends Service {
         mBuilder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
 //                .setContentTitle("Service is running")
-                .setPriority(Notification.PRIORITY_MAX)
                 .setContentIntent(contentIntent)
                 .setChannelId(CHANNEL_ID);
 
@@ -61,8 +59,8 @@ public class MyService extends Service {
         mNotificationManager.createNotificationChannel(mNotificationChannel);
 
         startForeground(NOTIFICATION_ID, mBuilder.build());
-        Toast.makeText(getApplicationContext(), "Notification created!", Toast.LENGTH_SHORT)
-                .show();
+//        Toast.makeText(getApplicationContext(), "Notification created!", Toast.LENGTH_SHORT)
+//                .show();
         receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
         receiverBroadcast = new MyBroadcastReceiver();
         registerReceiver(receiverBroadcast, receiverFilter);
@@ -81,9 +79,9 @@ public class MyService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.i("EXIT", "ondestroy!");
-        Intent myServiceStaterIntent = new Intent(this, MyServiceStarter.class);
+        Intent myServiceOnDestroyStaterIntent = new Intent(this, MyServiceOnDestroyStarter.class);
         unregisterReceiver(receiverBroadcast);
-        sendBroadcast(myServiceStaterIntent);
+        sendBroadcast(myServiceOnDestroyStaterIntent);
     }
 
     @Override

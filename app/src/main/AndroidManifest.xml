@@ -3,6 +3,7 @@
     package="com.bkdn.nqminh.hearingsaver">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -37,17 +38,23 @@
         <receiver
             android:name=".MyBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"
-            android:label="RestartServiceWhenStopped">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.HEADSET_PLUG" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".AutoStartOnBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <receiver
-            android:name=".MyServiceStarter"
+            android:name=".MyServiceOnDestroyStarter"
             android:enabled="true"
-            android:exported="true"
             android:label="RestartServiceWhenStopped"></receiver>
     </application>
 
