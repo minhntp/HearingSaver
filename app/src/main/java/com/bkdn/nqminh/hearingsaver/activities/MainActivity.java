@@ -333,13 +333,13 @@ public class MainActivity extends Activity {
 
         if (isDisabled) {
             textviewStatus2.setText(R.string.status_service_disabled);
-            textviewStatus.setTextColor(Color.RED);
+            textviewStatus2.setTextColor(Color.RED);
             buttonDisable.setEnabled(false);
             buttonEnable.setEnabled(true);
             stopService(mServiceIntent);
         } else {
             textviewStatus2.setText(R.string.status_service_enabled);
-            textviewStatus.setTextColor(Color.GREEN);
+            textviewStatus2.setTextColor(getColor(R.color.green));
             buttonEnable.setEnabled(false);
             buttonDisable.setEnabled(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -351,7 +351,7 @@ public class MainActivity extends Activity {
 
         if (isServiceRunning(MyService.class)) {
             textviewStatus.setText(R.string.status_service_running);
-            textviewStatus.setTextColor(Color.GREEN);
+            textviewStatus.setTextColor(getColor(R.color.green));
         } else {
             textviewStatus.setText(R.string.status_service_not_running);
             textviewStatus.setTextColor(Color.RED);
