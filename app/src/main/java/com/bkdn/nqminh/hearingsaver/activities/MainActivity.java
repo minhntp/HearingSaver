@@ -1,12 +1,13 @@
-package com.bkdn.nqminh.hearingsaver;
+package com.bkdn.nqminh.hearingsaver.activities;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,11 +16,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.bkdn.nqminh.hearingsaver.R;
+import com.bkdn.nqminh.hearingsaver.services.MyService;
+import com.bkdn.nqminh.hearingsaver.utils.Constants;
+import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
-    static SharedPreferences settings;
-    static SharedPreferences.Editor editor;
-    Context context;
+public class MainActivity extends Activity {
+//    Context context;
     CheckBox checkboxRingtonePlugged;
     CheckBox checkboxRingtoneUnpugged;
     CheckBox checkboxNotificationPlugged;
@@ -49,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
     Button buttonEnable;
     Button buttonDisable;
+    Button buttonSave;
+
     Intent mServiceIntent;
     private MyService mMyService;
 
-    public Context getContext() {
-        return context;
-    }
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,28 +70,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        settings = this.getSharedPreferences("data", MODE_PRIVATE);
-        editor = settings.edit();
 
-        context = this;
+        sharedPreferences = Operator.getInstance().getSharedPreferences();
+        editor = Operator.getInstance().getEditor();
 
-        mMyService = new MyService(getContext());
-        mServiceIntent = new Intent(getContext(), mMyService.getClass());
-//        mServiceIntent = new Intent(getContext(), MyService.class);
+        mMyService = new MyService();
+        mServiceIntent = new Intent(this, mMyService.getClass());
         connectViews();
         setPreviousStatus();
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        boolean isRunning = false;
+
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i("isMyServiceRunning?", true + "");
-                return true;
+                isRunning = true;
+                break;
             }
         }
-        Log.i("isMyServiceRunning?", false + "");
-        return false;
+        Log.i("debug", "service is running?" + isRunning);
+        return isRunning;
     }
 
     private void connectViews() {
@@ -122,61 +126,45 @@ public class MainActivity extends AppCompatActivity {
 
         buttonEnable = findViewById(R.id.button_enable);
         buttonDisable = findViewById(R.id.button_disable);
+        buttonSave = findViewById(R.id.button_save);
     }
 
     private void setPreviousStatus() {
-        checkboxRingtonePlugged.setChecked(settings.getBoolean("check1", true));
-        checkboxRingtoneUnpugged.setChecked(settings.getBoolean("check2", true));
-        checkboxNotificationPlugged.setChecked(settings.getBoolean("check3", true));
-        checkboxNotificationUnplugged.setChecked(settings.getBoolean("check4", true));
-        checkboxFeedbackPlugged.setChecked(settings.getBoolean("check5", true));
-        checkboxFeedbackUnplugged.setChecked(settings.getBoolean("check6", true));
-        checkboxMediaPlugged.setChecked(settings.getBoolean("check7", true));
-        checkboxMediaUnplugged.setChecked(settings.getBoolean("check8", true));
+        checkboxRingtonePlugged.setChecked(sharedPreferences.getBoolean(Constants.check1, true));
+        checkboxRingtoneUnpugged.setChecked(sharedPreferences.getBoolean(Constants.check2, true));
+        checkboxNotificationPlugged.setChecked(sharedPreferences.getBoolean(Constants.check3, true));
+        checkboxNotificationUnplugged.setChecked(sharedPreferences.getBoolean(Constants.check4, true));
+        checkboxFeedbackPlugged.setChecked(sharedPreferences.getBoolean(Constants.check5, true));
+        checkboxFeedbackUnplugged.setChecked(sharedPreferences.getBoolean(Constants.check6, true));
+        checkboxMediaPlugged.setChecked(sharedPreferences.getBoolean(Constants.check7, true));
+        checkboxMediaUnplugged.setChecked(sharedPreferences.getBoolean(Constants.check8, true));
 
-        seekbarRingtonePlugged.setProgress(settings.getInt("volume1", 100));
-        seekbarRingtoneUnplugged.setProgress(settings.getInt("volume2", 100));
-        seekbarNotificationPlugged.setProgress(settings.getInt("volume3", 100));
-        seekbarNotificationUnplugged.setProgress(settings.getInt("volume4", 100));
-        seekbarFeedbackPlugged.setProgress(settings.getInt("volume5", 100));
-        seekbarFeedbackUnplugged.setProgress(settings.getInt("volume6", 100));
-        seekbarMediaPlugged.setProgress(settings.getInt("volume7", 100));
-        seekbarMediaUnplugged.setProgress(settings.getInt("volume8", 100));
+        seekbarRingtonePlugged.setProgress(sharedPreferences.getInt(Constants.volume1, 100));
+        seekbarRingtoneUnplugged.setProgress(sharedPreferences.getInt(Constants.volume2, 100));
+        seekbarNotificationPlugged.setProgress(sharedPreferences.getInt(Constants.volume3, 100));
+        seekbarNotificationUnplugged.setProgress(sharedPreferences.getInt(Constants.volume4, 100));
+        seekbarFeedbackPlugged.setProgress(sharedPreferences.getInt(Constants.volume5, 100));
+        seekbarFeedbackUnplugged.setProgress(sharedPreferences.getInt(Constants.volume6, 100));
+        seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.volume7, 100));
+        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.volume8, 100));
 
-        textviewRingtonePlugged.setText("" + seekbarRingtonePlugged.getProgress());
-        textviewRingtoneUnplugged.setText("" + seekbarRingtoneUnplugged.getProgress());
-        textviewNotificationPlugged.setText("" + seekbarNotificationPlugged.getProgress());
-        textviewNotificationUnplugged.setText("" + seekbarNotificationUnplugged.getProgress());
-        textviewFeedbackPlugged.setText("" + seekbarFeedbackPlugged.getProgress());
-        textviewFeedbackUnplugged.setText("" + seekbarFeedbackUnplugged.getProgress());
-        textviewMediaPlugged.setText("" + seekbarMediaPlugged.getProgress());
-        textviewMediaUnplugged.setText("" + seekbarMediaUnplugged.getProgress());
+        textviewRingtonePlugged.setText(String.valueOf(seekbarRingtonePlugged.getProgress()));
+        textviewRingtoneUnplugged.setText(String.valueOf(seekbarRingtoneUnplugged.getProgress()));
+        textviewNotificationPlugged.setText(String.valueOf(seekbarNotificationPlugged.getProgress()));
+        textviewNotificationUnplugged.setText(String.valueOf(seekbarNotificationUnplugged.getProgress()));
+        textviewFeedbackPlugged.setText(String.valueOf(seekbarFeedbackPlugged.getProgress()));
+        textviewFeedbackUnplugged.setText(String.valueOf(seekbarFeedbackUnplugged.getProgress()));
+        textviewMediaPlugged.setText(String.valueOf(seekbarMediaPlugged.getProgress()));
+        textviewMediaUnplugged.setText(String.valueOf(seekbarMediaUnplugged.getProgress()));
 
-        if (settings.getBoolean("disable", true)) {
-            textviewStatus2.setText("Service is disabled!");
-            buttonDisable.setEnabled(false);
-        } else {
-            textviewStatus2.setText("Service is enabled!");
-            buttonEnable.setEnabled(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(mServiceIntent);
-            } else {
-                context.startService(mServiceIntent);
-            }
-        }
-
-        if (isMyServiceRunning(mMyService.getClass())) {
-            textviewStatus.setText("Service is running!");
-        } else {
-            textviewStatus.setText("Service is not running!");
-        }
+        showStatusAndStartOrStopService();
     }
 
     private void addEvents() {
         seekbarRingtonePlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewRingtonePlugged.setText("" + progress);
+                textviewRingtonePlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -192,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarRingtoneUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewRingtoneUnplugged.setText("" + progress);
+                textviewRingtoneUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -208,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarNotificationPlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewNotificationPlugged.setText("" + progress);
+                textviewNotificationPlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -224,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarNotificationUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewNotificationUnplugged.setText("" + progress);
+                textviewNotificationUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -240,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarFeedbackPlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewFeedbackPlugged.setText("" + progress);
+                textviewFeedbackPlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -256,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarFeedbackUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewFeedbackUnplugged.setText("" + progress);
+                textviewFeedbackUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -272,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarMediaPlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewMediaPlugged.setText("" + progress);
+                textviewMediaPlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -288,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarMediaUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewMediaUnplugged.setText("" + progress);
+                textviewMediaUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -301,63 +289,94 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        buttonEnable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                buttonEnable.setEnabled(false);
+//                buttonDisable.setEnabled(true);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    context.startForegroundService(mServiceIntent);
+//                } else {
+//                    context.startService(mServiceIntent);
+//                }
+                saveValues();
+                editor.putBoolean(Constants.settingsDisabled, false);
+                editor.commit();
+                showStatusAndStartOrStopService();
+            }
+        });
+
+        buttonDisable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                stopService(mServiceIntent);
+//                buttonEnable.setEnabled(true);
+//                buttonDisable.setEnabled(false);
+                saveValues();
+                editor.putBoolean(Constants.settingsDisabled, true);
+                editor.commit();
+                showStatusAndStartOrStopService();
+            }
+        });
+
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveValues();
+            }
+        });
     }
 
-    public void onButtonClicked(View view) {
-        switch (view.getId()) {
-            case R.id.button_enable:
-                buttonEnable.setEnabled(false);
-                buttonDisable.setEnabled(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(mServiceIntent);
-                } else {
-                    context.startService(mServiceIntent);
-                }
-                editor.putBoolean("disable", false);
-                editor.commit();
-                break;
-            case R.id.button_disable:
-                stopService(mServiceIntent);
-                buttonEnable.setEnabled(true);
-                buttonDisable.setEnabled(false);
-                editor.putBoolean("disable", true);
-                editor.commit();
-                break;
-            case R.id.button_save:
-                Toast.makeText(this, "Settings saved!", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        saveStatus();
-        if (isMyServiceRunning(mMyService.getClass())) {
-            textviewStatus.setText("Service is running!");
+    private void showStatusAndStartOrStopService() {
+        boolean isDisabled = sharedPreferences.getBoolean(Constants.settingsDisabled, false);
+
+        if (isDisabled) {
+            textviewStatus2.setText(R.string.status_service_disabled);
+            textviewStatus.setTextColor(Color.RED);
+            buttonDisable.setEnabled(false);
+            buttonEnable.setEnabled(true);
+            stopService(mServiceIntent);
         } else {
-            textviewStatus.setText("Service is not running!");
+            textviewStatus2.setText(R.string.status_service_enabled);
+            textviewStatus.setTextColor(Color.GREEN);
+            buttonEnable.setEnabled(false);
+            buttonDisable.setEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(mServiceIntent);
+            } else {
+               startService(mServiceIntent);
+            }
         }
-        if (settings.getBoolean("disable", true)) {
-            textviewStatus2.setText("Service is disabled!");
+
+        if (isServiceRunning(MyService.class)) {
+            textviewStatus.setText(R.string.status_service_running);
+            textviewStatus.setTextColor(Color.GREEN);
         } else {
-            textviewStatus2.setText("Service is enabled!");
+            textviewStatus.setText(R.string.status_service_not_running);
+            textviewStatus.setTextColor(Color.RED);
         }
     }
 
-    private void saveStatus() {
-        editor.putInt("volume1", seekbarRingtonePlugged.getProgress());
-        editor.putInt("volume2", seekbarRingtoneUnplugged.getProgress());
-        editor.putInt("volume3", seekbarNotificationPlugged.getProgress());
-        editor.putInt("volume4", seekbarNotificationUnplugged.getProgress());
-        editor.putInt("volume5", seekbarFeedbackPlugged.getProgress());
-        editor.putInt("volume6", seekbarFeedbackUnplugged.getProgress());
-        editor.putInt("volume7", seekbarMediaPlugged.getProgress());
-        editor.putInt("volume8", seekbarMediaUnplugged.getProgress());
-        editor.putBoolean("check1", checkboxRingtonePlugged.isChecked());
-        editor.putBoolean("check2", checkboxRingtoneUnpugged.isChecked());
-        editor.putBoolean("check3", checkboxNotificationPlugged.isChecked());
-        editor.putBoolean("check4", checkboxNotificationUnplugged.isChecked());
-        editor.putBoolean("check5", checkboxFeedbackPlugged.isChecked());
-        editor.putBoolean("check6", checkboxFeedbackUnplugged.isChecked());
-        editor.putBoolean("check7", checkboxMediaPlugged.isChecked());
-        editor.putBoolean("check8", checkboxMediaUnplugged.isChecked());
+    private void saveValues() {
+        editor.putInt(Constants.volume1, seekbarRingtonePlugged.getProgress());
+        editor.putInt(Constants.volume2, seekbarRingtoneUnplugged.getProgress());
+        editor.putInt(Constants.volume3, seekbarNotificationPlugged.getProgress());
+        editor.putInt(Constants.volume4, seekbarNotificationUnplugged.getProgress());
+        editor.putInt(Constants.volume5, seekbarFeedbackPlugged.getProgress());
+        editor.putInt(Constants.volume6, seekbarFeedbackUnplugged.getProgress());
+        editor.putInt(Constants.volume7, seekbarMediaPlugged.getProgress());
+        editor.putInt(Constants.volume8, seekbarMediaUnplugged.getProgress());
+        editor.putBoolean(Constants.check1, checkboxRingtonePlugged.isChecked());
+        editor.putBoolean(Constants.check2, checkboxRingtoneUnpugged.isChecked());
+        editor.putBoolean(Constants.check3, checkboxNotificationPlugged.isChecked());
+        editor.putBoolean(Constants.check4, checkboxNotificationUnplugged.isChecked());
+        editor.putBoolean(Constants.check5, checkboxFeedbackPlugged.isChecked());
+        editor.putBoolean(Constants.check6, checkboxFeedbackUnplugged.isChecked());
+        editor.putBoolean(Constants.check7, checkboxMediaPlugged.isChecked());
+        editor.putBoolean(Constants.check8, checkboxMediaUnplugged.isChecked());
         editor.commit();
+        Toast.makeText(this, Constants.toastSettingsSaved, Toast.LENGTH_SHORT).show();
     }
 
     @Override

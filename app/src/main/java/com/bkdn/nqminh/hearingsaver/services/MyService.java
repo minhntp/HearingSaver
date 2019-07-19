@@ -1,4 +1,4 @@
-package com.bkdn.nqminh.hearingsaver;
+package com.bkdn.nqminh.hearingsaver.services;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -9,9 +9,16 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.bkdn.nqminh.hearingsaver.R;
+import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
+import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnDestroyBroadcastReceiver;
+import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnPluggedBroadcastReceiver;
+import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangedBroadcastReceiver;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class MyService extends Service {
@@ -23,22 +30,14 @@ public class MyService extends Service {
     private static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "channel-hearing-saver";
     private static final String CHANNEL_NAME = "Service is running";
-    IntentFilter receiverFilter;
-    MyBroadcastReceiver receiverBroadcast;
-    Context appCxt;
+    IntentFilter headsetReceiverFilter, ringerModeReceiverFilter;
+    OnPluggedBroadcastReceiver headsetBroadcastReceiver;
+    OnRingerModeChangedBroadcastReceiver ringerModeBroadcastReceiver;
     Notification.Builder mBuilder;
     NotificationChannel mNotificationChannel;
     NotificationManager mNotificationManager;
 
     PendingIntent contentIntent;
-
-    public MyService(Context applicationContext) {
-        appCxt = applicationContext;
-        Log.d("HERE", "Here I am!");
-    }
-
-    public MyService() {
-    }
 
     @Override
     public void onCreate() {
@@ -57,20 +56,20 @@ public class MyService extends Service {
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.createNotificationChannel(mNotificationChannel);
-
         startForeground(NOTIFICATION_ID, mBuilder.build());
-//        Toast.makeText(getApplicationContext(), "Notification created!", Toast.LENGTH_SHORT)
-//                .show();
-        receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        receiverBroadcast = new MyBroadcastReceiver();
-        registerReceiver(receiverBroadcast, receiverFilter);
+
+        headsetReceiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        headsetBroadcastReceiver = new OnPluggedBroadcastReceiver();
+        registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter);
+
+        ringerModeReceiverFilter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        ringerModeBroadcastReceiver = new OnRingerModeChangedBroadcastReceiver();
+        registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        startForeground(NOTIFICATION_ID, notification);
         super.onStartCommand(intent, flags, startId);
-
 
         return START_STICKY;
     }
@@ -79,9 +78,11 @@ public class MyService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.i("EXIT", "ondestroy!");
-        Intent myServiceOnDestroyStaterIntent = new Intent(this, MyServiceOnDestroyStarter.class);
-        unregisterReceiver(receiverBroadcast);
-        sendBroadcast(myServiceOnDestroyStaterIntent);
+        unregisterReceiver(headsetBroadcastReceiver);
+        unregisterReceiver(ringerModeBroadcastReceiver);
+
+        Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
+        sendBroadcast(onDestroyBroadcastReceiverIntent);
     }
 
     @Override
