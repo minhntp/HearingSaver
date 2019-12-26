@@ -77,6 +77,7 @@ public class MainActivity extends Activity {
         mMyService = new MyService();
         mServiceIntent = new Intent(this, mMyService.getClass());
         connectViews();
+//        setDefaultOnFirstRun();
         setPreviousStatus();
     }
 
@@ -129,6 +130,14 @@ public class MainActivity extends Activity {
         buttonSave = findViewById(R.id.button_save);
     }
 
+//    private void setDefaultOnFirstRun() {
+//        if (!sharedPreferences.getBoolean(Constants.firstRun, false)) {
+//            editor.putBoolean(Constants.settingsDisabled, true);
+//            editor.putBoolean(Constants.firstRun, true);
+//            editor.commit();
+//        }
+//    }
+
     private void setPreviousStatus() {
         checkboxRingtonePlugged.setChecked(sharedPreferences.getBoolean(Constants.check1, true));
         checkboxRingtoneUnpugged.setChecked(sharedPreferences.getBoolean(Constants.check2, true));
@@ -139,14 +148,14 @@ public class MainActivity extends Activity {
         checkboxMediaPlugged.setChecked(sharedPreferences.getBoolean(Constants.check7, true));
         checkboxMediaUnplugged.setChecked(sharedPreferences.getBoolean(Constants.check8, true));
 
-        seekbarRingtonePlugged.setProgress(sharedPreferences.getInt(Constants.volume1, 100));
-        seekbarRingtoneUnplugged.setProgress(sharedPreferences.getInt(Constants.volume2, 100));
-        seekbarNotificationPlugged.setProgress(sharedPreferences.getInt(Constants.volume3, 100));
-        seekbarNotificationUnplugged.setProgress(sharedPreferences.getInt(Constants.volume4, 100));
-        seekbarFeedbackPlugged.setProgress(sharedPreferences.getInt(Constants.volume5, 100));
-        seekbarFeedbackUnplugged.setProgress(sharedPreferences.getInt(Constants.volume6, 100));
-        seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.volume7, 100));
-        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.volume8, 100));
+        seekbarRingtonePlugged.setProgress(sharedPreferences.getInt(Constants.volume1, Constants.defaultVolumeHeadphone));
+        seekbarRingtoneUnplugged.setProgress(sharedPreferences.getInt(Constants.volume2, Constants.defaultVolumeSpeaker));
+        seekbarNotificationPlugged.setProgress(sharedPreferences.getInt(Constants.volume3, Constants.defaultVolumeHeadphone));
+        seekbarNotificationUnplugged.setProgress(sharedPreferences.getInt(Constants.volume4, Constants.defaultVolumeSpeaker));
+        seekbarFeedbackPlugged.setProgress(sharedPreferences.getInt(Constants.volume5, Constants.defaultVolumeHeadphone));
+        seekbarFeedbackUnplugged.setProgress(sharedPreferences.getInt(Constants.volume6, Constants.defaultVolumeSpeaker));
+        seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.volume7, Constants.defaultVolumeHeadphone));
+        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.volume8, Constants.defaultVolumeSpeaker));
 
         textviewRingtonePlugged.setText(String.valueOf(seekbarRingtonePlugged.getProgress()));
         textviewRingtoneUnplugged.setText(String.valueOf(seekbarRingtoneUnplugged.getProgress()));
@@ -329,7 +338,7 @@ public class MainActivity extends Activity {
     }
 
     private void showStatusAndStartOrStopService() {
-        boolean isDisabled = sharedPreferences.getBoolean(Constants.settingsDisabled, false);
+        boolean isDisabled = sharedPreferences.getBoolean(Constants.settingsDisabled, true);
 
         if (isDisabled) {
             textviewStatus2.setText(R.string.status_service_disabled);

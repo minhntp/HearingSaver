@@ -50,7 +50,7 @@ public class MyService extends Service {
 
         mBuilder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
-//                .setContentTitle("Service is running")
+                .setContentTitle("Service is running")
                 .setContentIntent(contentIntent)
                 .setChannelId(CHANNEL_ID);
 

@@ -26,4 +26,9 @@ public class Constants {
     public static String settingsPendingIsPlugged = "isPlugged";
     public static String toastVolumeAdjustedPostpone = "Volume adjusted after postponed!";
     public static String toastSettingsSaved = "Settings saved!";
+    public static String firstRun = "firstRun";
+
+    public static int defaultVolumeHeadphone = 3;
+    public static int defaultVolumeSpeaker = 15;
+
 }
