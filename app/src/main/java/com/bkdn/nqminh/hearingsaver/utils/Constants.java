@@ -21,7 +21,7 @@ public class Constants {
     public static String check7 = "check7";
     public static String check8 = "check8";
     public static String toastError = "Error: cannot read plugged-in state!";
-    public static String toastPostpone = "Phone is in silent or vibrate mode. Postponed adjustment!";
+    public static String toastPostpone = "Phone is in silent or vibrate mode.\nPostponed adjustment!";
     public static String toastVolumeAdjusted = "Volume adjusted!";
     public static String settingsPendingIsPlugged = "isPlugged";
     public static String toastVolumeAdjustedPostpone = "Volume adjusted after postponed!";

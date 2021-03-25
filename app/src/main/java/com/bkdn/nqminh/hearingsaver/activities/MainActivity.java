@@ -39,23 +39,22 @@ public class MainActivity extends Activity {
     SeekBar seekbarFeedbackUnplugged;
     SeekBar seekbarMediaPlugged;
     SeekBar seekbarMediaUnplugged;
-    TextView textviewRingtonePlugged;
-    TextView textviewRingtoneUnplugged;
-    TextView textviewNotificationPlugged;
-    TextView textviewNotificationUnplugged;
-    TextView textviewFeedbackPlugged;
-    TextView textviewFeedbackUnplugged;
-    TextView textviewMediaPlugged;
-    TextView textviewMediaUnplugged;
-    TextView textviewStatus;
-    TextView textviewStatus2;
+    TextView volumeRingtonePlugged;
+    TextView volumeRingtoneUnplugged;
+    TextView volumeNotificationPlugged;
+    TextView volumeNotificationUnplugged;
+    TextView volumeFeedbackPlugged;
+    TextView volumeFeedbackUnplugged;
+    TextView volumeMediaPlugged;
+    TextView volumeMediaUnplugged;
+    TextView textViewSettingStatus;
+    TextView textViewServiceStatus;
 
     Button buttonEnable;
     Button buttonDisable;
     Button buttonSave;
 
     Intent mServiceIntent;
-    private MyService mMyService;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -74,19 +73,19 @@ public class MainActivity extends Activity {
         sharedPreferences = Operator.getInstance().getSharedPreferences();
         editor = Operator.getInstance().getEditor();
 
-        mMyService = new MyService();
+        MyService mMyService = new MyService();
         mServiceIntent = new Intent(this, mMyService.getClass());
         connectViews();
 //        setDefaultOnFirstRun();
         setPreviousStatus();
     }
 
-    private boolean isServiceRunning(Class<?> serviceClass) {
+    private boolean isServiceRunning() {
         boolean isRunning = false;
 
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
+            if (MyService.class.getName().equals(service.service.getClassName())) {
                 isRunning = true;
                 break;
             }
@@ -96,38 +95,38 @@ public class MainActivity extends Activity {
     }
 
     private void connectViews() {
-        checkboxRingtonePlugged = findViewById(R.id.checkbox_ringtone_plugged);
-        checkboxRingtoneUnpugged = findViewById(R.id.checkbox_ringtone_unplugged);
-        checkboxNotificationPlugged = findViewById(R.id.checkbox_notification_plugged);
-        checkboxNotificationUnplugged = findViewById(R.id.checkbox_notification_unplugged);
-        checkboxFeedbackPlugged = findViewById(R.id.checkbox_feedback_plugged);
-        checkboxFeedbackUnplugged = findViewById(R.id.checkbox_feedback_unplugged);
-        checkboxMediaPlugged = findViewById(R.id.checkbox_media_plugged);
-        checkboxMediaUnplugged = findViewById(R.id.checkbox_media_unplugged);
+        checkboxRingtonePlugged = findViewById(R.id.ringtone_plugged_checkbox);
+        checkboxRingtoneUnpugged = findViewById(R.id.ringtone_unplugged_checkbox);
+        checkboxNotificationPlugged = findViewById(R.id.notification_plugged_checkbox);
+        checkboxNotificationUnplugged = findViewById(R.id.notification_unplugged_checkbox);
+        checkboxFeedbackPlugged = findViewById(R.id.feedback_plugged_checkbox);
+        checkboxFeedbackUnplugged = findViewById(R.id.feedback_unplugged_checkbox);
+        checkboxMediaPlugged = findViewById(R.id.media_plugged_checkbox);
+        checkboxMediaUnplugged = findViewById(R.id.media_unplugged_checkbox);
 
-        seekbarRingtonePlugged = findViewById(R.id.seekbar_ringtone_plugged);
-        seekbarRingtoneUnplugged = findViewById(R.id.seekbar_ringtone_unplugged);
-        seekbarNotificationPlugged = findViewById(R.id.seekbar_notification_plugged);
-        seekbarNotificationUnplugged = findViewById(R.id.seekbar_notification_unplugged);
-        seekbarFeedbackPlugged = findViewById(R.id.seekbar_feedback_plugged);
-        seekbarFeedbackUnplugged = findViewById(R.id.seekbar_feedback_unplugged);
-        seekbarMediaPlugged = findViewById(R.id.seekbar_media_plugged);
-        seekbarMediaUnplugged = findViewById(R.id.seekbar_media_unplugged);
+        seekbarRingtonePlugged = findViewById(R.id.ringtone_plugged_seekbar);
+        seekbarRingtoneUnplugged = findViewById(R.id.ringtone_unplugged_seekbar);
+        seekbarNotificationPlugged = findViewById(R.id.notification_plugged_seekbar);
+        seekbarNotificationUnplugged = findViewById(R.id.notification_unplugged_seekbar);
+        seekbarFeedbackPlugged = findViewById(R.id.feedback_plugged_seekbar);
+        seekbarFeedbackUnplugged = findViewById(R.id.feedback_unplugged_seekbar);
+        seekbarMediaPlugged = findViewById(R.id.media_plugged_seekbar);
+        seekbarMediaUnplugged = findViewById(R.id.media_unplugged_seekbar);
 
-        textviewRingtonePlugged = findViewById(R.id.textview_ringtone_plugged);
-        textviewRingtoneUnplugged = findViewById(R.id.textview_ringtone_unplugged);
-        textviewNotificationPlugged = findViewById(R.id.textview_notification_plugged);
-        textviewNotificationUnplugged = findViewById(R.id.textview_notification_unplugged);
-        textviewFeedbackPlugged = findViewById(R.id.textview_feedback_plugged);
-        textviewFeedbackUnplugged = findViewById(R.id.textview_feedback_unplugged);
-        textviewMediaPlugged = findViewById(R.id.textview_media_plugged);
-        textviewMediaUnplugged = findViewById(R.id.textview_media_unplugged);
-        textviewStatus = findViewById(R.id.textview_status);
-        textviewStatus2 = findViewById(R.id.textview_status2);
+        volumeRingtonePlugged = findViewById(R.id.ringtone_plugged_volume_textview);
+        volumeRingtoneUnplugged = findViewById(R.id.ringtone_unplugged_volume_textview);
+        volumeNotificationPlugged = findViewById(R.id.notification_plugged_volume_textview);
+        volumeNotificationUnplugged = findViewById(R.id.notification_unplugged_volume_textview);
+        volumeFeedbackPlugged = findViewById(R.id.feedback_plugged_volume_textview);
+        volumeFeedbackUnplugged = findViewById(R.id.feedback_unplugged_volume_textview);
+        volumeMediaPlugged = findViewById(R.id.media_plugged_volume_textview);
+        volumeMediaUnplugged = findViewById(R.id.media_unplugged_volume_textview);
+        textViewSettingStatus = findViewById(R.id.setting_status_textview);
+        textViewServiceStatus = findViewById(R.id.service_status_textview);
 
-        buttonEnable = findViewById(R.id.button_enable);
-        buttonDisable = findViewById(R.id.button_disable);
-        buttonSave = findViewById(R.id.button_save);
+        buttonEnable = findViewById(R.id.enable_button);
+        buttonDisable = findViewById(R.id.disable_button);
+        buttonSave = findViewById(R.id.save_button);
     }
 
 //    private void setDefaultOnFirstRun() {
@@ -157,14 +156,14 @@ public class MainActivity extends Activity {
         seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.volume7, Constants.defaultVolumeHeadphone));
         seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.volume8, Constants.defaultVolumeSpeaker));
 
-        textviewRingtonePlugged.setText(String.valueOf(seekbarRingtonePlugged.getProgress()));
-        textviewRingtoneUnplugged.setText(String.valueOf(seekbarRingtoneUnplugged.getProgress()));
-        textviewNotificationPlugged.setText(String.valueOf(seekbarNotificationPlugged.getProgress()));
-        textviewNotificationUnplugged.setText(String.valueOf(seekbarNotificationUnplugged.getProgress()));
-        textviewFeedbackPlugged.setText(String.valueOf(seekbarFeedbackPlugged.getProgress()));
-        textviewFeedbackUnplugged.setText(String.valueOf(seekbarFeedbackUnplugged.getProgress()));
-        textviewMediaPlugged.setText(String.valueOf(seekbarMediaPlugged.getProgress()));
-        textviewMediaUnplugged.setText(String.valueOf(seekbarMediaUnplugged.getProgress()));
+        volumeRingtonePlugged.setText(String.valueOf(seekbarRingtonePlugged.getProgress()));
+        volumeRingtoneUnplugged.setText(String.valueOf(seekbarRingtoneUnplugged.getProgress()));
+        volumeNotificationPlugged.setText(String.valueOf(seekbarNotificationPlugged.getProgress()));
+        volumeNotificationUnplugged.setText(String.valueOf(seekbarNotificationUnplugged.getProgress()));
+        volumeFeedbackPlugged.setText(String.valueOf(seekbarFeedbackPlugged.getProgress()));
+        volumeFeedbackUnplugged.setText(String.valueOf(seekbarFeedbackUnplugged.getProgress()));
+        volumeMediaPlugged.setText(String.valueOf(seekbarMediaPlugged.getProgress()));
+        volumeMediaUnplugged.setText(String.valueOf(seekbarMediaUnplugged.getProgress()));
 
         showStatusAndStartOrStopService();
     }
@@ -173,7 +172,7 @@ public class MainActivity extends Activity {
         seekbarRingtonePlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewRingtonePlugged.setText(String.valueOf(progress));
+                volumeRingtonePlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -189,7 +188,7 @@ public class MainActivity extends Activity {
         seekbarRingtoneUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewRingtoneUnplugged.setText(String.valueOf(progress));
+                volumeRingtoneUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -205,7 +204,7 @@ public class MainActivity extends Activity {
         seekbarNotificationPlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewNotificationPlugged.setText(String.valueOf(progress));
+                volumeNotificationPlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -221,7 +220,7 @@ public class MainActivity extends Activity {
         seekbarNotificationUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewNotificationUnplugged.setText(String.valueOf(progress));
+                volumeNotificationUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -237,7 +236,7 @@ public class MainActivity extends Activity {
         seekbarFeedbackPlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewFeedbackPlugged.setText(String.valueOf(progress));
+                volumeFeedbackPlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -253,7 +252,7 @@ public class MainActivity extends Activity {
         seekbarFeedbackUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewFeedbackUnplugged.setText(String.valueOf(progress));
+                volumeFeedbackUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -269,7 +268,7 @@ public class MainActivity extends Activity {
         seekbarMediaPlugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewMediaPlugged.setText(String.valueOf(progress));
+                volumeMediaPlugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -285,7 +284,7 @@ public class MainActivity extends Activity {
         seekbarMediaUnplugged.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textviewMediaUnplugged.setText(String.valueOf(progress));
+                volumeMediaUnplugged.setText(String.valueOf(progress));
             }
 
             @Override
@@ -341,14 +340,14 @@ public class MainActivity extends Activity {
         boolean isDisabled = sharedPreferences.getBoolean(Constants.settingsDisabled, true);
 
         if (isDisabled) {
-            textviewStatus2.setText(R.string.status_service_disabled);
-            textviewStatus2.setTextColor(Color.RED);
+            textViewSettingStatus.setText(R.string.status_service_disabled);
+            textViewSettingStatus.setTextColor(Color.RED);
             buttonDisable.setEnabled(false);
             buttonEnable.setEnabled(true);
             stopService(mServiceIntent);
         } else {
-            textviewStatus2.setText(R.string.status_service_enabled);
-            textviewStatus2.setTextColor(getColor(R.color.green));
+            textViewSettingStatus.setText(R.string.status_service_enabled);
+            textViewSettingStatus.setTextColor(getColor(R.color.blue));
             buttonEnable.setEnabled(false);
             buttonDisable.setEnabled(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -358,12 +357,12 @@ public class MainActivity extends Activity {
             }
         }
 
-        if (isServiceRunning(MyService.class)) {
-            textviewStatus.setText(R.string.status_service_running);
-            textviewStatus.setTextColor(getColor(R.color.green));
+        if (isServiceRunning()) {
+            textViewServiceStatus.setText(R.string.status_service_running);
+            textViewServiceStatus.setTextColor(getColor(R.color.blue));
         } else {
-            textviewStatus.setText(R.string.status_service_not_running);
-            textviewStatus.setTextColor(Color.RED);
+            textViewServiceStatus.setText(R.string.status_service_not_running);
+            textViewServiceStatus.setTextColor(Color.RED);
         }
     }
 
