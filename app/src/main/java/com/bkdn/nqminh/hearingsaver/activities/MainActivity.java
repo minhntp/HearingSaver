@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
@@ -54,7 +53,7 @@ public class MainActivity extends Activity {
     Button buttonDisable;
     Button buttonSave;
 
-    Intent mServiceIntent;
+    Intent myServiceIntent;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -70,11 +69,11 @@ public class MainActivity extends Activity {
 
     private void initialize() {
 
-        sharedPreferences = Operator.getInstance().getSharedPreferences();
-        editor = Operator.getInstance().getEditor();
+        sharedPreferences = Operator.getInstance(getApplicationContext()).getSharedPreferences();
+        editor = Operator.getInstance(getApplicationContext()).getEditor();
 
-        MyService mMyService = new MyService();
-        mServiceIntent = new Intent(this, mMyService.getClass());
+        MyService myService = new MyService();
+        myServiceIntent = new Intent(this, myService.getClass());
         connectViews();
 //        setDefaultOnFirstRun();
         setPreviousStatus();
@@ -298,62 +297,49 @@ public class MainActivity extends Activity {
             }
         });
 
-        buttonEnable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                buttonEnable.setEnabled(false);
-//                buttonDisable.setEnabled(true);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    context.startForegroundService(mServiceIntent);
-//                } else {
-//                    context.startService(mServiceIntent);
-//                }
-                saveValues();
-                editor.putBoolean(Constants.settingsDisabled, false);
-                editor.commit();
-                showStatusAndStartOrStopService();
-            }
+        buttonEnable.setOnClickListener(view -> {
+            saveValues(false);
+            showStatusAndStartOrStopService();
+            Toast.makeText(this, Constants.toastEnable, Toast.LENGTH_SHORT).show();
         });
 
-        buttonDisable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                stopService(mServiceIntent);
-//                buttonEnable.setEnabled(true);
-//                buttonDisable.setEnabled(false);
-                saveValues();
-                editor.putBoolean(Constants.settingsDisabled, true);
-                editor.commit();
-                showStatusAndStartOrStopService();
-            }
+        buttonDisable.setOnClickListener(view -> {
+            saveValues(true);
+            showStatusAndStartOrStopService();
+            Toast.makeText(this, Constants.toastDisable, Toast.LENGTH_SHORT).show();
         });
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveValues();
-            }
+        buttonSave.setOnClickListener(view -> {
+            boolean isDisabled = sharedPreferences.getBoolean(Constants.isDisabled, false);
+            saveValues(isDisabled);
+            Toast.makeText(this, Constants.toastSettingsSaved, Toast.LENGTH_SHORT).show();
         });
     }
 
     private void showStatusAndStartOrStopService() {
-        boolean isDisabled = sharedPreferences.getBoolean(Constants.settingsDisabled, true);
+        boolean isDisabled = sharedPreferences.getBoolean(Constants.isDisabled, true);
 
         if (isDisabled) {
             textViewSettingStatus.setText(R.string.status_service_disabled);
             textViewSettingStatus.setTextColor(Color.RED);
             buttonDisable.setEnabled(false);
             buttonEnable.setEnabled(true);
-            stopService(mServiceIntent);
+            stopService(myServiceIntent);
         } else {
             textViewSettingStatus.setText(R.string.status_service_enabled);
             textViewSettingStatus.setTextColor(getColor(R.color.blue));
             buttonEnable.setEnabled(false);
             buttonDisable.setEnabled(true);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Constants.firstRunMyService, true);
+            editor.putBoolean(Constants.firstRunPlug, true);
+            editor.apply();
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(mServiceIntent);
+                startForegroundService(myServiceIntent);
             } else {
-               startService(mServiceIntent);
+               startService(myServiceIntent);
             }
         }
 
@@ -366,7 +352,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void saveValues() {
+    private void saveValues(boolean isDisabled) {
         editor.putInt(Constants.volume1, seekbarRingtonePlugged.getProgress());
         editor.putInt(Constants.volume2, seekbarRingtoneUnplugged.getProgress());
         editor.putInt(Constants.volume3, seekbarNotificationPlugged.getProgress());
@@ -383,16 +369,15 @@ public class MainActivity extends Activity {
         editor.putBoolean(Constants.check6, checkboxFeedbackUnplugged.isChecked());
         editor.putBoolean(Constants.check7, checkboxMediaPlugged.isChecked());
         editor.putBoolean(Constants.check8, checkboxMediaUnplugged.isChecked());
+        editor.putBoolean(Constants.isDisabled, isDisabled);
         editor.commit();
-        Toast.makeText(this, Constants.toastSettingsSaved, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy() {
-        stopService(mServiceIntent);
+        stopService(myServiceIntent);
         Log.i("MAINACT", "onDestroy!");
         super.onDestroy();
-
     }
 
 }

@@ -3,11 +3,11 @@ package com.bkdn.nqminh.hearingsaver.broadcast_receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
 
@@ -17,28 +17,21 @@ import com.bkdn.nqminh.hearingsaver.utils.Constants;
 
 public class OnPluggedBroadcastReceiver extends BroadcastReceiver {
 
-    public static boolean isPlugged = false;
-
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())) {
-            int pluggedState = intent.getIntExtra("state", -1);
-            isPlugged = (pluggedState != 0);
-            boolean isSilentOrVibrate = (Operator.getInstance().getAudioManager().getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) ||
-                    (Operator.getInstance().getAudioManager().getRingerMode() == AudioManager.RINGER_MODE_SILENT);
-            Log.d("debug", "on plugged broadcast received: isSilentOrVibrate = " + isSilentOrVibrate);
+        if ((intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG))) {
 
-            Operator.getInstance().setPending(isSilentOrVibrate, isPlugged);
-            Operator.getInstance().setMediaVolume(isPlugged);
+            SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
+            boolean isFirstRunPlug = sharedPreferences.getBoolean(Constants.firstRunPlug, true);
 
-            if (isSilentOrVibrate) {
-                Toast.makeText(context, Constants.toastPostpone, Toast.LENGTH_SHORT).show();
+            if(isFirstRunPlug) {
+                sharedPreferences.edit().putBoolean(Constants.firstRunPlug, false).apply();
             } else {
-                Operator.getInstance().setVolumeExceptMedia(isPlugged);
-                Toast.makeText(context, Constants.toastVolumeAdjusted, Toast.LENGTH_SHORT).show();
+                int state = intent.getIntExtra("state",0);
+                int messageType = state == 0 ? 0 : 1;
+                Operator.getInstance(context).adjustOnPlugging(context, messageType);
             }
         }
     }
-
 
 }

@@ -106,8 +106,8 @@
     <!-- NOTIFICATION-->
     <TextView
         android:id="@+id/notification_textview"
-        android:layout_width="86dp"
-        android:layout_height="31dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_between_vertical"
         android:text="@string/notification"
         android:textColor="@color/orange"

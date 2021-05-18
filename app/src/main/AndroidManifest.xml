@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -19,7 +20,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,16 +35,19 @@
 
         <receiver
             android:name=".broadcast_receivers.OnPluggedBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.HEADSET_PLUG" />
-            </intent-filter>
+            android:enabled="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.HEADSET_PLUG" />-->
+<!--            </intent-filter>-->
         </receiver>
 
         <receiver
-            android:name=".broadcast_receivers.OnBootBroadcastReceiver"
-            android:enabled="true"
+            android:name=".broadcast_receivers.OnBluetoothBroadcastReceiver"
+            android:enabled="true">
+        </receiver>
+
+        <receiver
+            android:name=".broadcast_receivers.OnBootCompleteBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

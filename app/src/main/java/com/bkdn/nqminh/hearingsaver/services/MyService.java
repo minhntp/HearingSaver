@@ -5,21 +5,28 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
+import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnBluetoothBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnDestroyBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnPluggedBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangedBroadcastReceiver;
+import com.bkdn.nqminh.hearingsaver.utils.Constants;
+import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class MyService extends Service {
@@ -28,9 +35,10 @@ public class MyService extends Service {
     private static final String CHANNEL_ID = "01";
     private static final String CHANNEL_NAME = "Hearing Saver Service";
     private static final String CHANNEL_DESCRIPTION = "Hearing Saver Service status";
-    IntentFilter headsetReceiverFilter, ringerModeReceiverFilter;
+    IntentFilter headsetReceiverFilter, bluetoothReceiverFilter, ringerModeReceiverFilter;
     OnPluggedBroadcastReceiver headsetBroadcastReceiver;
     OnRingerModeChangedBroadcastReceiver ringerModeBroadcastReceiver;
+    OnBluetoothBroadcastReceiver bluetoothBroadcastReceiver;
 
     @Override
     public void onCreate() {
@@ -66,13 +74,32 @@ public class MyService extends Service {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
-        headsetReceiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        // Adjust volume if this is the first run
+        Context context = getApplicationContext();
+        SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
+        boolean isFirstRunMyService = sharedPreferences.getBoolean(Constants.firstRunMyService, false);
+        if (isFirstRunMyService) {
+            Operator.getInstance(context).adjustOnPlugging(context, 4);
+            sharedPreferences.edit().putBoolean(Constants.firstRunMyService, false).apply();
+        }
+
+        // HEADSET_PLUG BroadcastReceiver
+        headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
         headsetBroadcastReceiver = new OnPluggedBroadcastReceiver();
         registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter);
+//        Toast.makeText(context, "registered for plug", Toast.LENGTH_SHORT).show();
 
+        // BLUETOOTH BroadcastReceiver
+        bluetoothReceiverFilter = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        bluetoothBroadcastReceiver = new OnBluetoothBroadcastReceiver();
+        registerReceiver(bluetoothBroadcastReceiver, bluetoothReceiverFilter);
+//        Toast.makeText(context, "registered for bluetooth", Toast.LENGTH_SHORT).show();
+
+        // RINGER_MODE_CHANGED BroadcastReceiver
         ringerModeReceiverFilter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         ringerModeBroadcastReceiver = new OnRingerModeChangedBroadcastReceiver();
         registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter);
+//        Toast.makeText(context, "registered for ringer mode", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -88,6 +115,7 @@ public class MyService extends Service {
         Log.i("EXIT", "ondestroy!");
         unregisterReceiver(headsetBroadcastReceiver);
         unregisterReceiver(ringerModeBroadcastReceiver);
+        unregisterReceiver(bluetoothBroadcastReceiver);
 
         Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
         sendBroadcast(onDestroyBroadcastReceiverIntent);

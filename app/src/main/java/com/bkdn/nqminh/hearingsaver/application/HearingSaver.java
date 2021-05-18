@@ -4,13 +4,13 @@ import android.app.Application;
 import android.content.Context;
 
 public class HearingSaver extends Application {
-    private static Context context;
+//    private static Context context;
 
     @Override
     public void onCreate() {
 //        ACRA.init(this);
         super.onCreate();
-        HearingSaver.context = getApplicationContext();
+//        HearingSaver.context = getApplicationContext();
     }
 
     @Override
@@ -19,7 +19,7 @@ public class HearingSaver extends Application {
 //        ACRA.init(this);
     }
 
-    public static Context getAppContext() {
-        return HearingSaver.context;
-    }
+//    public static Context getAppContext() {
+//        return HearingSaver.context;
+//    }
 }
