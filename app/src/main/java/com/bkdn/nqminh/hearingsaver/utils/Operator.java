@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Operator {
     private SharedPreferences sharedPreferences;
     private AudioManager audioManager;
+
+    private int headsetState = -1;
 
     private static Operator instance;
 
@@ -35,6 +36,14 @@ public class Operator {
 
     public SharedPreferences.Editor getEditor() {
         return sharedPreferences.edit();
+    }
+
+    public int getHeadsetState() {
+        return headsetState;
+    }
+
+    public void setHeadsetState(int headsetState) {
+        this.headsetState = headsetState;
     }
 
     public void setVolumeExceptMedia(boolean isPlugged) {
@@ -130,10 +139,10 @@ public class Operator {
     public void adjustOnPlugging(Context context, int messageType) {
         // (FOR BOTH WIRED AND BLUETOOTH AUDIO DEVICES)
 
-            boolean isDisabled = sharedPreferences.getBoolean(Constants.isDisabled, false);
+        boolean isDisabled = sharedPreferences.getBoolean(Constants.isDisabled, false);
 
-            if (!isDisabled) {
-                // Set Media Volume
+        if (!isDisabled) {
+            // Set Media Volume
                 /*
                 boolean isPluggedIn = isPluggedIn();
 
@@ -145,47 +154,47 @@ public class Operator {
                     Toast.makeText(context, Constants.unplugged, Toast.LENGTH_SHORT).show();
                 }
                 */
-                boolean isPluggedIn = isPluggedIn();
+            boolean isPluggedIn = isPluggedIn();
 
-                getEditor().putBoolean(Constants.isPluggedIn, isPluggedIn);
+            getEditor().putBoolean(Constants.isPluggedIn, isPluggedIn);
 
-                switch (messageType) {
-                    case 0:
-                        Toast.makeText(context, Constants.message0, Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
-                        Toast.makeText(context, Constants.message1, Toast.LENGTH_SHORT).show();
-                        break;
-                    case 2:
-                        Toast.makeText(context, Constants.message2, Toast.LENGTH_SHORT).show();
-                        break;
-                    case 3:
-                        Toast.makeText(context, Constants.message3, Toast.LENGTH_SHORT).show();
-                        break;
-                    case 4:
-                        if(isPluggedIn) {
-                            Toast.makeText(context, Constants.message41, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, Constants.message42, Toast.LENGTH_SHORT).show();
-                        }
-                }
-
-                setMediaVolume(isPluggedIn);
-
-                // Set Other Volumes
-                int currentRingerMode = audioManager.getRingerMode();
-                boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
-                        currentRingerMode == AudioManager.RINGER_MODE_SILENT;
-
-                setPending(isSilentOrVibrate);
-
-                if (isSilentOrVibrate) {
-                    Toast.makeText(context, Constants.toastPostpone, Toast.LENGTH_LONG).show();
-                } else {
-                    setVolumeExceptMedia(isPluggedIn);
-                    Toast.makeText(context, Constants.toastVolumeAdjusted, Toast.LENGTH_SHORT).show();
-                }
+            switch (messageType) {
+                case 0:
+                    Toast.makeText(context, Constants.message0, Toast.LENGTH_SHORT).show();
+                    break;
+                case 1:
+                    Toast.makeText(context, Constants.message1, Toast.LENGTH_SHORT).show();
+                    break;
+                case 2:
+                    Toast.makeText(context, Constants.message2, Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    Toast.makeText(context, Constants.message3, Toast.LENGTH_SHORT).show();
+                    break;
+                case 4:
+                    if (isPluggedIn) {
+                        Toast.makeText(context, Constants.message41, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, Constants.message42, Toast.LENGTH_SHORT).show();
+                    }
             }
+
+            setMediaVolume(isPluggedIn);
+
+            // Set Other Volumes
+            int currentRingerMode = audioManager.getRingerMode();
+            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
+                    currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+
+            setPending(isSilentOrVibrate);
+
+            if (isSilentOrVibrate) {
+                Toast.makeText(context, Constants.toastPostpone, Toast.LENGTH_LONG).show();
+            } else {
+                setVolumeExceptMedia(isPluggedIn);
+                Toast.makeText(context, Constants.toastVolumeAdjusted, Toast.LENGTH_SHORT).show();
+            }
+        }
 //        }
     }
 

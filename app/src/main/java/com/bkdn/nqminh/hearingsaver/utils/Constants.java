@@ -5,7 +5,6 @@ public class Constants {
     public static String settingsData = "data";
     public static String isDisabled = "disabled";
     public static String settingsPending = "pending";
-    public static String previousPlugState = "previous-plug-state";
     public static String isPluggedIn = "is-plugged-in";
     public static String firstRunMyService = "first-run-0";
     public static String firstRunPlug = "first-run-1";
@@ -40,8 +39,6 @@ public class Constants {
     public static String service_destroyed = "Service is destroyed! Restarting Hearing Saver...";
 //    public static String ringer_mode_changed = "Hearing Saver: Ringer mode changed!";
 //    public static String plugged_unplugged = "Hearing Saver: Headphone jack is plugged in or unplugged!";
-    public static String plugged = "Hearing Saver: An audio device is connected!";
-    public static String unplugged = "Hearing Saver: An audio device is disconnected!";
     public static String message0 = "Hearing Saver: Headphone jack is disconnected!";
     public static String message1 = "Hearing Saver: Headphone jack is connected!";
     public static String message2 = "Hearing Saver: Bluetooth device is disconnected!";
