@@ -425,28 +425,31 @@
         app:layout_constraintLeft_toRightOf="@id/enable_button"
         app:layout_constraintRight_toRightOf="parent"/>
 
-<!--    STATUS -->
-    <TextView
-        android:id="@+id/setting_status_textview"
+<!--    STATUS TEXTVIEWS-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/setting_status"
-        android:textColor="@color/blue"
-        android:textSize="@dimen/status_text"
-        app:layout_constraintBottom_toTopOf="@id/service_status_textview"/>
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/enable_button"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <TextView
+            android:id="@+id/setting_status_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/setting_status"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/status_text"/>
 
-    <TextView
-        android:id="@+id/service_status_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:gravity="center"
-        android:text="@string/service_status"
-        android:textColor="@color/blue"
-        android:textSize="@dimen/status_text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="@dimen/margin_top_and_bottom"/>
-
+        <TextView
+            android:id="@+id/service_status_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:text="@string/service_status"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/status_text"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

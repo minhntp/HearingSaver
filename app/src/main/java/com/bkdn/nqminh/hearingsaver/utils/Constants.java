@@ -4,27 +4,30 @@ public class Constants {
     // ---------------------------------------------------------------------------------------------    
     // SHARED PREFERENCES
     public static final String SETTINGS_DATA = "data";
-    public static final String IS_SERVICE_ENABLED = "enabled";
+    public static final String SP_IS_SERVICE_ENABLED = "enabled";
     public static final String SETTINGS_PENDING = "pending";
-    public static final String IS_PLUGGED_IN = "is-plugged-in";
-    public static final String FIRST_RUN_0 = "first-run-0";
-    public static final String FIRST_RUN_1 = "first-run-1";
-    public static final String VOLUME_1 = "volume1";
-    public static final String VOLUME_2 = "volume2";
-    public static final String VOLUME_3 = "volume3";
-    public static final String VOLUME_4 = "volume4";
-    public static final String VOLUME_5 = "volume5";
-    public static final String VOLUME_6 = "volume6";
-    public static final String VOLUME_7 = "volume7";
-    public static final String VOLUME_8 = "volume8";
-    public static final String CHECK_1 = "check1";
-    public static final String CHECK_2 = "check2";
-    public static final String CHECK_3 = "check3";
-    public static final String CHECK_4 = "check4";
-    public static final String CHECK_5 = "check5";
-    public static final String CHECK_6 = "check6";
-    public static final String CHECK_7 = "check7";
-    public static final String CHECK_8 = "check8";
+    public static final String SKB_RING_PLUGGED = "volume1";
+    public static final String SKB_RING_UNPLUGGED = "volume2";
+    public static final String SKB_NOTI_PLUGGED = "volume3";
+    public static final String SKB_NOTI_UNPLUGGED = "volume4";
+    public static final String SKB_FEEDBACK_PLUGGED = "volume5";
+    public static final String SKB_FEEDBACK_UNPLUGGED = "volume6";
+    public static final String SKB_MEDIA_PLUGGED = "volume7";
+    public static final String SKB_MEDIA_UNPLUGGED = "volume8";
+    public static final String CB_RING_PLUGGED = "check1";
+    public static final String CB_RING_UNPLUGGED = "check2";
+    public static final String CB_NOTI_PLUGGED = "check3";
+    public static final String CB_NOTI_UNPLUGGED = "check4";
+    public static final String CB_FEEDBACK_PLUGGED = "check5";
+    public static final String CB_FEEDBACK_UNPLUGGED = "check6";
+    public static final String CB_MEDIA_PLUGGED = "check7";
+    public static final String CB_MEDIA_UNPLUGGED = "check8";
+    public static final String SP_HEADSET_STATE = "headset-state";
+    public static final String SP_IS_FIRST_RUN = "is-first-run";
+    public static final String SP_PREVIOUS_PLUG_STATE = "previous-plug-state ";
+    public static final String SP_POSTPONED_PLUG_STATE = "postponed-plug-state"; // Used for pending adjustments
+    public static final String STATE_PLUGGED = "state-plugged";
+    public static final String STATE_UNPLUGGED = "state-unplugged";
 
     // ---------------------------------------------------------------------------------------------
     // TOAST MESSAGES
@@ -35,7 +38,7 @@ public class Constants {
     public static final String TOAST_ENABLE = "Settings saved.\nService enabled!";
     public static final String TOAST_DISABLE = "Settings saved.\nService disabled!";
 
-    public static final String TOAST_ON_BOOT = "Boot completed!\nStarting Hearing Saver...";
+    public static final String TOAST_ON_BOOT_COMPLETED = "Boot completed!\nStarting Hearing Saver...";
     public static final String TOAST_ACTIVITY_DESTROYED = "Main Activity is destroyed!";
     public static final String TOAST_SERVICE_DESTROYED = "Service is destroyed!";
     public static final String TOAST_RESTART_SERVICE = "Restarting Hearing Saver...";
@@ -69,6 +72,14 @@ public class Constants {
     // ---------------------------------------------------------------------------------------------
     // TAG
     public static final String DEBUG_TAG = "debug";
+
+    // MESSAGES BETWEEN CLASSES
+    public static final String MESSAGE_WIRE_PLUGGED = "wire-plugged";
+    public static final String MESSAGE_WIRE_UNPLUGGED = "wire-unplugged";
+    public static final String MESSAGE_BLUETOOTH_CONNECTED = "bluetooth-plugged";
+    public static final String MESSAGE_BLUETOOTH_DISCONNECTED = "bluetooth-unplugged";
+    public static final String MESSAGE_FIRST_RUN = "first-run";
+
 
 
 

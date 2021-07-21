@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.widget.Toast;
 
 import com.bkdn.nqminh.hearingsaver.services.MyService;
@@ -17,7 +16,7 @@ public class OnDestroyBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         settings = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
-        boolean isServiceEnabled = settings.getBoolean(Constants.IS_SERVICE_ENABLED, false);
+        boolean isServiceEnabled = settings.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
             Toast.makeText(context, Constants.TOAST_RESTART_SERVICE, Toast.LENGTH_SHORT).show();

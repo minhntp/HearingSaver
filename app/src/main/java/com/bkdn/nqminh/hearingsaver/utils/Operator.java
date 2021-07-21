@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
@@ -20,8 +19,6 @@ public class Operator {
     private SharedPreferences sharedPreferences;
     private AudioManager audioManager;
     private ActivityManager activityManager;
-
-    private int headsetState = -1;
 
     private static Operator instance;
 
@@ -52,51 +49,51 @@ public class Operator {
         return sharedPreferences.edit();
     }
 
-    public int getHeadsetState() {
-        return headsetState;
-    }
+//    public int getHeadsetState() {
+//        return sharedPreferences.getInt(Constants.SP_HEADSET_STATE, -1);
+//    }
 
-    public void setHeadsetState(int headsetState) {
-        this.headsetState = headsetState;
-    }
+//    public void setHeadsetState(int headsetState) {
+//        sharedPreferences.edit().putInt(Constants.SP_HEADSET_STATE, headsetState).apply();
+//    }
 
-    public void setVolumeExceptMedia(boolean isPlugged) {
+    public void setAllVolumesExceptMedia(boolean isPlugged) {
         if (isPlugged) {
-            if (sharedPreferences.getBoolean(Constants.CHECK_1, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_RING_PLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_RING,
-                        sharedPreferences.getInt(Constants.VOLUME_1, 100),
+                        sharedPreferences.getInt(Constants.SKB_RING_PLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
-            if (sharedPreferences.getBoolean(Constants.CHECK_3, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_NOTI_PLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_NOTIFICATION,
-                        sharedPreferences.getInt(Constants.VOLUME_3, 100),
+                        sharedPreferences.getInt(Constants.SKB_NOTI_PLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
-            if (sharedPreferences.getBoolean(Constants.CHECK_5, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_FEEDBACK_PLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_SYSTEM,
-                        sharedPreferences.getInt(Constants.VOLUME_5, 100),
+                        sharedPreferences.getInt(Constants.SKB_FEEDBACK_PLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
         } else {
-            if (sharedPreferences.getBoolean(Constants.CHECK_2, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_RING_UNPLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_RING,
-                        sharedPreferences.getInt(Constants.VOLUME_2, 100),
+                        sharedPreferences.getInt(Constants.SKB_RING_UNPLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
-            if (sharedPreferences.getBoolean(Constants.CHECK_4, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_NOTI_UNPLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_NOTIFICATION,
-                        sharedPreferences.getInt(Constants.VOLUME_4, 100),
+                        sharedPreferences.getInt(Constants.SKB_NOTI_UNPLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
-            if (sharedPreferences.getBoolean(Constants.CHECK_6, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_FEEDBACK_UNPLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_SYSTEM,
-                        sharedPreferences.getInt(Constants.VOLUME_6, 100),
+                        sharedPreferences.getInt(Constants.SKB_FEEDBACK_UNPLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
         }
@@ -104,17 +101,17 @@ public class Operator {
 
     public void setOnlyMediaVolume(boolean isPlugged) {
         if (isPlugged) {
-            if (sharedPreferences.getBoolean(Constants.CHECK_7, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_MEDIA_PLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_MUSIC,
-                        sharedPreferences.getInt(Constants.VOLUME_7, 100),
+                        sharedPreferences.getInt(Constants.SKB_MEDIA_PLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
         } else {
-            if (sharedPreferences.getBoolean(Constants.CHECK_8, true)) {
+            if (sharedPreferences.getBoolean(Constants.CB_MEDIA_UNPLUGGED, true)) {
                 audioManager.setStreamVolume(
                         AudioManager.STREAM_MUSIC,
-                        sharedPreferences.getInt(Constants.VOLUME_8, 100),
+                        sharedPreferences.getInt(Constants.SKB_MEDIA_UNPLUGGED, 100),
                         AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             }
         }
@@ -127,9 +124,7 @@ public class Operator {
 //        editor.apply();
 //    }
     public void setPending(boolean isPending) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.SETTINGS_PENDING, isPending);
-        editor.apply();
+        sharedPreferences.edit().putBoolean(Constants.SETTINGS_PENDING, isPending).apply();
     }
 
     private final ArrayList<Integer> audioOutputDeviceTypes = new ArrayList<Integer>() {
@@ -153,50 +148,31 @@ public class Operator {
         return count;
     }
 
-    public void adjustOnPlugStateChanged(Context context, int messageType) {
+    public void handlePlugStateChange(Context context, String stateChangeTypeMessage) {
+
         // MESSAGE TYPE
-        //  0: wire unplugged
-        //  1: wire plugged
-        //  2: bluetooth disconnected
-        //  3: bluetooth connected
-        //  4: from MyService - first run from enabling service or on boot complete
+        //  wire unplugged
+        //  wire plugged
+        //  bluetooth disconnected
+        //  bluetooth connected
+        //  first run: from MyService - on first time enable service OR on boot complete
         // (FOR BOTH WIRED AND BLUETOOTH AUDIO DEVICES)
 
-        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.IS_SERVICE_ENABLED, false);
+        // This method will ALWAYS adjust volumes
+
+        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
             int pluggedDevices = countPluggedDevices();
 
-            getEditor().putFloat(Constants.IS_PLUGGED_IN, pluggedDevices);
+            getEditor().putBoolean(Constants.SP_POSTPONED_PLUG_STATE, (pluggedDevices > 0)).apply();
 
-            switch (messageType) {
-                case 0:
-                    Toast.makeText(context, Constants.TOAST_JACK_DISCONNECTED, Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:
-                    Toast.makeText(context, Constants.TOAST_JACK_CONNECTED, Toast.LENGTH_SHORT).show();
-                    break;
-                case 2:
-                    Toast.makeText(context, Constants.TOAST_BLUETOOTH_DISCONNECTED, Toast.LENGTH_SHORT).show();
-                    break;
-                case 3:
-                    Toast.makeText(context, Constants.TOAST_BLUETOOTH_CONNECTED, Toast.LENGTH_SHORT).show();
-                    break;
-                case 4:
-                    if (pluggedDevices > 1) {
-                        Toast.makeText(context,
-                                pluggedDevices + Constants.TOAST_DEVICES_CONNECTED
-                                , Toast.LENGTH_SHORT).show();
-                    } else if (pluggedDevices == 1) {
-                        Toast.makeText(context, Constants.TOAST_ONE_DEVICE_CONNECTED, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, Constants.TOAST_NO_DEVICES_CONNECTED, Toast.LENGTH_SHORT).show();
-                    }
-            }
+            showToastOnReceivedMessage(context, stateChangeTypeMessage, pluggedDevices);
 
+            // Set Media volume first
             setOnlyMediaVolume(pluggedDevices > 0);
 
-            // Set Other Volumes
+            // Then set other Volumes
             int currentRingerMode = audioManager.getRingerMode();
             boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
                     currentRingerMode == AudioManager.RINGER_MODE_SILENT;
@@ -206,27 +182,64 @@ public class Operator {
             if (isSilentOrVibrate) {
                 Toast.makeText(context, Constants.TOAST_POSTPONE, Toast.LENGTH_LONG).show();
             } else {
-                setVolumeExceptMedia(pluggedDevices > 0);
+                setAllVolumesExceptMedia(pluggedDevices > 0);
                 Toast.makeText(context, Constants.TOAST_VOLUME_ADJUSTED, Toast.LENGTH_SHORT).show();
             }
         }
 //        }
     }
 
-    public void adjustOnRingerModeChanged(Context context) {
-        int currentRingerMode = Operator.getInstance(context).getAudioManager().getRingerMode();
-        boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
-                currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+    private void showToastOnReceivedMessage(Context context, String message, int pluggedDevices) {
+        switch (message) {
+            case Constants.MESSAGE_WIRE_UNPLUGGED:
+                Toast.makeText(context, Constants.TOAST_JACK_DISCONNECTED, Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.MESSAGE_WIRE_PLUGGED:
+                Toast.makeText(context, Constants.TOAST_JACK_CONNECTED, Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.MESSAGE_BLUETOOTH_DISCONNECTED:
+                Toast.makeText(context, Constants.TOAST_BLUETOOTH_DISCONNECTED, Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.MESSAGE_BLUETOOTH_CONNECTED:
+                Toast.makeText(context, Constants.TOAST_BLUETOOTH_CONNECTED, Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.MESSAGE_FIRST_RUN:
+                if (pluggedDevices > 1) {
+                    Toast.makeText(context,
+                            pluggedDevices + Constants.TOAST_DEVICES_CONNECTED
+                            , Toast.LENGTH_SHORT).show();
+                } else if (pluggedDevices == 1) {
+                    Toast.makeText(context, Constants.TOAST_ONE_DEVICE_CONNECTED, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, Constants.TOAST_NO_DEVICES_CONNECTED, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                // Do something
+        }
+    }
 
-//            boolean isPlugged = Operator.getInstance(context).getAudioManager().isWiredHeadsetOn();
-        boolean isPlugged = sharedPreferences.getBoolean(Constants.IS_PLUGGED_IN, false);
+    public void adjustOnRingerModeChanged(Context context) {
 
         boolean isPending = sharedPreferences.getBoolean(Constants.SETTINGS_PENDING, false);
 
-        if (isPending && !isSilentOrVibrate) {
-            setVolumeExceptMedia(isPlugged);
-            setPending(false);
-            Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_SHORT).show();
+        if (isPending) {
+            int currentRingerMode = Operator.getInstance(context).getAudioManager().getRingerMode();
+
+            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
+                    currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+
+//            boolean isPlugged = Operator.getInstance(context).getAudioManager().isWiredHeadsetOn();
+
+            if (isSilentOrVibrate) {
+
+                boolean isPlugged = sharedPreferences.getBoolean(Constants.SP_POSTPONED_PLUG_STATE, false);
+
+                setAllVolumesExceptMedia(isPlugged);
+
+                setPending(false);
+                Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

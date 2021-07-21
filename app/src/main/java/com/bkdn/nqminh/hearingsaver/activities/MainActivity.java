@@ -1,13 +1,10 @@
 package com.bkdn.nqminh.hearingsaver.activities;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
@@ -22,7 +19,7 @@ import com.bkdn.nqminh.hearingsaver.utils.Operator;
 public class MainActivity extends Activity {
     //    Context context;
     private CheckBox checkboxRingtonePlugged;
-    private CheckBox checkboxRingtoneUnpugged;
+    private CheckBox checkboxRingtoneUnplugged;
     private CheckBox checkboxNotificationPlugged;
     private CheckBox checkboxNotificationUnplugged;
     private CheckBox checkboxFeedbackPlugged;
@@ -63,7 +60,6 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
         initialize();
-        addEvents();
     }
 
     private void initialize() {
@@ -72,21 +68,12 @@ public class MainActivity extends Activity {
         editor = Operator.getInstance(getApplicationContext()).getEditor();
 
         connectViews();
+        addEvents();
 
         mainServiceIntent = new Intent(this, MyService.class);
 
-//        PendingIntent pendingIntent =
-//                PendingIntent.getActivity(this, 0, mainServiceIntent, 0);
-//
-//        Notification notification = new Notification.Builder(this, Constants.CHANNEL_ID)
-//                .setContentTitle(Constants.NOTIFICATION_TITLE)
-//                .setContentText(Constants.NOTIFICATION_MESSAGE)
-//                .setSmallIcon(R.drawable.ic_notification)
-//                .setContentIntent(pendingIntent)
-//                .setTicker(Constants.NOTIFICATION_TICKER)
-//                .build();
+        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
-        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.IS_SERVICE_ENABLED, false);
         if (isServiceEnabled) {
             startForegroundService(mainServiceIntent);
         }
@@ -96,7 +83,7 @@ public class MainActivity extends Activity {
 
     private void connectViews() {
         checkboxRingtonePlugged = findViewById(R.id.ringtone_plugged_checkbox);
-        checkboxRingtoneUnpugged = findViewById(R.id.ringtone_unplugged_checkbox);
+        checkboxRingtoneUnplugged = findViewById(R.id.ringtone_unplugged_checkbox);
         checkboxNotificationPlugged = findViewById(R.id.notification_plugged_checkbox);
         checkboxNotificationUnplugged = findViewById(R.id.notification_unplugged_checkbox);
         checkboxFeedbackPlugged = findViewById(R.id.feedback_plugged_checkbox);
@@ -138,23 +125,23 @@ public class MainActivity extends Activity {
 //    }
 
     private void setPreviousStatus() {
-        checkboxRingtonePlugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_1, true));
-        checkboxRingtoneUnpugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_2, true));
-        checkboxNotificationPlugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_3, true));
-        checkboxNotificationUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_4, true));
-        checkboxFeedbackPlugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_5, true));
-        checkboxFeedbackUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_6, true));
-        checkboxMediaPlugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_7, true));
-        checkboxMediaUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CHECK_8, true));
+        checkboxRingtonePlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_RING_PLUGGED, true));
+        checkboxRingtoneUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CB_RING_UNPLUGGED, true));
+        checkboxNotificationPlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_NOTI_PLUGGED, true));
+        checkboxNotificationUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CB_NOTI_UNPLUGGED, true));
+        checkboxFeedbackPlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_FEEDBACK_PLUGGED, true));
+        checkboxFeedbackUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CB_FEEDBACK_UNPLUGGED, true));
+        checkboxMediaPlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_MEDIA_PLUGGED, true));
+        checkboxMediaUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CB_MEDIA_UNPLUGGED, true));
 
-        seekbarRingtonePlugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_1, Constants.DEFAULT_VOLUME_HEADPHONE));
-        seekbarRingtoneUnplugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_2, Constants.DEFAULT_VOLUME_SPEAKER));
-        seekbarNotificationPlugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_3, Constants.DEFAULT_VOLUME_HEADPHONE));
-        seekbarNotificationUnplugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_4, Constants.DEFAULT_VOLUME_SPEAKER));
-        seekbarFeedbackPlugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_5, Constants.DEFAULT_VOLUME_HEADPHONE));
-        seekbarFeedbackUnplugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_6, Constants.DEFAULT_VOLUME_SPEAKER));
-        seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_7, Constants.DEFAULT_VOLUME_HEADPHONE));
-        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.VOLUME_8, Constants.DEFAULT_VOLUME_SPEAKER));
+        seekbarRingtonePlugged.setProgress(sharedPreferences.getInt(Constants.SKB_RING_PLUGGED, Constants.DEFAULT_VOLUME_HEADPHONE));
+        seekbarRingtoneUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_RING_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER));
+        seekbarNotificationPlugged.setProgress(sharedPreferences.getInt(Constants.SKB_NOTI_PLUGGED, Constants.DEFAULT_VOLUME_HEADPHONE));
+        seekbarNotificationUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_NOTI_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER));
+        seekbarFeedbackPlugged.setProgress(sharedPreferences.getInt(Constants.SKB_FEEDBACK_PLUGGED, Constants.DEFAULT_VOLUME_HEADPHONE));
+        seekbarFeedbackUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_FEEDBACK_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER));
+        seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.SKB_MEDIA_PLUGGED, Constants.DEFAULT_VOLUME_HEADPHONE));
+        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_MEDIA_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER));
 
         volumeRingtonePlugged.setText(String.valueOf(seekbarRingtonePlugged.getProgress()));
         volumeRingtoneUnplugged.setText(String.valueOf(seekbarRingtoneUnplugged.getProgress()));
@@ -319,18 +306,13 @@ public class MainActivity extends Activity {
     private void handleServiceStateChange() {
 
         // Check again to see if sharedPreference is set
-        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.IS_SERVICE_ENABLED, false);
+        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
             textViewSettingStatus.setText(R.string.status_service_enabled);
             textViewSettingStatus.setTextColor(getColor(R.color.blue));
             buttonEnable.setEnabled(false);
             buttonDisable.setEnabled(true);
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(Constants.FIRST_RUN_0, true);
-            editor.putBoolean(Constants.FIRST_RUN_1, true);
-            editor.apply();
 
             startForegroundService(mainServiceIntent);
         } else {
@@ -351,27 +333,28 @@ public class MainActivity extends Activity {
     }
 
     private  void saveSettings() {
-        editor.putInt(Constants.VOLUME_1, seekbarRingtonePlugged.getProgress());
-        editor.putInt(Constants.VOLUME_2, seekbarRingtoneUnplugged.getProgress());
-        editor.putInt(Constants.VOLUME_3, seekbarNotificationPlugged.getProgress());
-        editor.putInt(Constants.VOLUME_4, seekbarNotificationUnplugged.getProgress());
-        editor.putInt(Constants.VOLUME_5, seekbarFeedbackPlugged.getProgress());
-        editor.putInt(Constants.VOLUME_6, seekbarFeedbackUnplugged.getProgress());
-        editor.putInt(Constants.VOLUME_7, seekbarMediaPlugged.getProgress());
-        editor.putInt(Constants.VOLUME_8, seekbarMediaUnplugged.getProgress());
-        editor.putBoolean(Constants.CHECK_1, checkboxRingtonePlugged.isChecked());
-        editor.putBoolean(Constants.CHECK_2, checkboxRingtoneUnpugged.isChecked());
-        editor.putBoolean(Constants.CHECK_3, checkboxNotificationPlugged.isChecked());
-        editor.putBoolean(Constants.CHECK_4, checkboxNotificationUnplugged.isChecked());
-        editor.putBoolean(Constants.CHECK_5, checkboxFeedbackPlugged.isChecked());
-        editor.putBoolean(Constants.CHECK_6, checkboxFeedbackUnplugged.isChecked());
-        editor.putBoolean(Constants.CHECK_7, checkboxMediaPlugged.isChecked());
-        editor.putBoolean(Constants.CHECK_8, checkboxMediaUnplugged.isChecked());
+        editor.putInt(Constants.SKB_RING_PLUGGED, seekbarRingtonePlugged.getProgress());
+        editor.putInt(Constants.SKB_RING_UNPLUGGED, seekbarRingtoneUnplugged.getProgress());
+        editor.putInt(Constants.SKB_NOTI_PLUGGED, seekbarNotificationPlugged.getProgress());
+        editor.putInt(Constants.SKB_NOTI_UNPLUGGED, seekbarNotificationUnplugged.getProgress());
+        editor.putInt(Constants.SKB_FEEDBACK_PLUGGED, seekbarFeedbackPlugged.getProgress());
+        editor.putInt(Constants.SKB_FEEDBACK_UNPLUGGED, seekbarFeedbackUnplugged.getProgress());
+        editor.putInt(Constants.SKB_MEDIA_PLUGGED, seekbarMediaPlugged.getProgress());
+        editor.putInt(Constants.SKB_MEDIA_UNPLUGGED, seekbarMediaUnplugged.getProgress());
+        editor.putBoolean(Constants.CB_RING_PLUGGED, checkboxRingtonePlugged.isChecked());
+        editor.putBoolean(Constants.CB_RING_UNPLUGGED, checkboxRingtoneUnplugged.isChecked());
+        editor.putBoolean(Constants.CB_NOTI_PLUGGED, checkboxNotificationPlugged.isChecked());
+        editor.putBoolean(Constants.CB_NOTI_UNPLUGGED, checkboxNotificationUnplugged.isChecked());
+        editor.putBoolean(Constants.CB_FEEDBACK_PLUGGED, checkboxFeedbackPlugged.isChecked());
+        editor.putBoolean(Constants.CB_FEEDBACK_UNPLUGGED, checkboxFeedbackUnplugged.isChecked());
+        editor.putBoolean(Constants.CB_MEDIA_PLUGGED, checkboxMediaPlugged.isChecked());
+        editor.putBoolean(Constants.CB_MEDIA_UNPLUGGED, checkboxMediaUnplugged.isChecked());
         editor.commit();
     }
 
     private void saveSettings(boolean isServiceEnabled) {
-        editor.putBoolean(Constants.IS_SERVICE_ENABLED, isServiceEnabled);
+        editor.putBoolean(Constants.SP_IS_SERVICE_ENABLED, isServiceEnabled);
+        editor.putBoolean(Constants.SP_IS_FIRST_RUN, isServiceEnabled);
         editor.commit();
     }
 

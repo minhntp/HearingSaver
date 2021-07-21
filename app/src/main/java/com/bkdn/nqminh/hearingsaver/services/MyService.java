@@ -78,10 +78,11 @@ public class MyService extends Service {
         // ADJUST VOLUME ON FIRST RUN
         Context context = getApplicationContext();
         SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
-        boolean isFirstRunMyService = sharedPreferences.getBoolean(Constants.FIRST_RUN_0, false);
-        if (isFirstRunMyService) {
-            Operator.getInstance(context).adjustOnPlugStateChanged(context, 4);
-            sharedPreferences.edit().putBoolean(Constants.FIRST_RUN_0, false).apply();
+        boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, false);
+
+        if (isFirstRun) {
+            Operator.getInstance(context).handlePlugStateChange(context, Constants.MESSAGE_FIRST_RUN);
+            sharedPreferences.edit().putBoolean(Constants.SP_IS_FIRST_RUN, false).apply();
         }
 
         // HEADSET_PLUG Broadcast Receiver
