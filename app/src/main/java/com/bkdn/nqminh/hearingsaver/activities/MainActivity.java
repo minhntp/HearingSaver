@@ -365,6 +365,14 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+        // Default behavior: finish (destroy) the activity
+//        super.onBackPressed();
+
+        // Do nothing instead
+        moveTaskToBack(true);
+    }
 }
 
 
