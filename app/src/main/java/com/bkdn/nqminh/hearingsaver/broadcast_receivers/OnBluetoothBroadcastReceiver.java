@@ -15,7 +15,7 @@ public class OnBluetoothBroadcastReceiver extends BroadcastReceiver {
             if (state == BluetoothAdapter.STATE_CONNECTED
                     || state == BluetoothAdapter.STATE_DISCONNECTED) {
                 int messageType = state == BluetoothAdapter.STATE_DISCONNECTED ? 2 : 3;
-                Operator.getInstance(context).adjustOnPlugging(context, messageType);
+                Operator.getInstance(context).adjustOnPlugStateChanged(context, messageType);
             }
         }
     }

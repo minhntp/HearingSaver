@@ -13,10 +13,9 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
@@ -29,11 +28,6 @@ import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class MyService extends Service {
-
-    private static final int NOTIFICATION_ID = 1;
-    private static final String CHANNEL_ID = "01";
-    private static final String CHANNEL_NAME = "Hearing Saver Service";
-    private static final String CHANNEL_DESCRIPTION = "Hearing Saver Service status";
     IntentFilter headsetReceiverFilter, bluetoothReceiverFilter, ringerModeReceiverFilter;
     OnPluggedBroadcastReceiver headsetBroadcastReceiver;
     OnRingerModeChangedBroadcastReceiver ringerModeBroadcastReceiver;
@@ -43,62 +37,67 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        // Create the NotificationChannel, but only on API 26+ (Android 8.0) because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        // -----------------------------------------------------------------------------------------
+        // NOTIFICATION
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_MIN);
-            channel.setDescription(CHANNEL_DESCRIPTION);
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        // Intent for opening MainActivity when notification is clicked
+        Intent notificationIntent = Operator.getInstance(getApplicationContext()).getRunningIntent();
+        if (notificationIntent == null) {
+            notificationIntent = new Intent(this, MainActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
 
-        // Create an explicit intent for opening an Activity when notification in clicked
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent notificationPendingIntent = PendingIntent
+                .getActivity(this, 0, notificationIntent, 0);
 
-        androidx.core.app.NotificationCompat.Builder builder = new androidx.core.app.NotificationCompat.Builder(this, CHANNEL_ID)
+        // Build notification
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-//                .setContentTitle("Service is running")
-//                .setContentText("...")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent);
+                .setContentTitle(Constants.NOTIFICATION_TITLE)
+                .setContentText(Constants.NOTIFICATION_MESSAGE)
+//                .setPriority(NotificationCompat.PRIORITY_MIN)=
+                .setContentIntent(notificationPendingIntent)
+                .setOngoing(true)
+                .setSubText(Constants.NOTIFICATION_MESSAGE);
 
-        // Show the notification
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        // Build channel
+        int importance = NotificationManager.IMPORTANCE_MIN;
+        NotificationChannel channel =
+                new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+        channel.setDescription(Constants.CHANNEL_DESCRIPTION);
 
-        // Adjust volume if this is the first run
+        // Create/Register channel
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+
+        // Show notification
+//        NotificationManagerCompat.from(this).notify(Constants.NOTIFICATION_ID, notificationBuilder.build());
+        startForeground(Constants.NOTIFICATION_ID, notificationBuilder.build());
+
+        //------------------------------------------------------------------------------------------
+        // ADJUST VOLUME ON FIRST RUN
         Context context = getApplicationContext();
         SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
-        boolean isFirstRunMyService = sharedPreferences.getBoolean(Constants.firstRunMyService, false);
+        boolean isFirstRunMyService = sharedPreferences.getBoolean(Constants.FIRST_RUN_0, false);
         if (isFirstRunMyService) {
-            Operator.getInstance(context).adjustOnPlugging(context, 4);
-            sharedPreferences.edit().putBoolean(Constants.firstRunMyService, false).apply();
+            Operator.getInstance(context).adjustOnPlugStateChanged(context, 4);
+            sharedPreferences.edit().putBoolean(Constants.FIRST_RUN_0, false).apply();
         }
 
-        // HEADSET_PLUG BroadcastReceiver
+        // HEADSET_PLUG Broadcast Receiver
         headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
         headsetBroadcastReceiver = new OnPluggedBroadcastReceiver();
         registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter);
-//        Toast.makeText(context, "registered for plug", Toast.LENGTH_SHORT).show();
 
-        // BLUETOOTH BroadcastReceiver
+        // BLUETOOTH Broadcast Receiver
         bluetoothReceiverFilter = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         bluetoothBroadcastReceiver = new OnBluetoothBroadcastReceiver();
         registerReceiver(bluetoothBroadcastReceiver, bluetoothReceiverFilter);
-//        Toast.makeText(context, "registered for bluetooth", Toast.LENGTH_SHORT).show();
 
-        // RINGER_MODE_CHANGED BroadcastReceiver
+        // RINGER_MODE_CHANGED Broadcast Receiver
         ringerModeReceiverFilter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         ringerModeBroadcastReceiver = new OnRingerModeChangedBroadcastReceiver();
         registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter);
-//        Toast.makeText(context, "registered for ringer mode", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -111,7 +110,9 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i("EXIT", "ondestroy!");
+
+        Toast.makeText(this, Constants.TOAST_SERVICE_DESTROYED, Toast.LENGTH_SHORT).show();
+
         unregisterReceiver(headsetBroadcastReceiver);
         unregisterReceiver(ringerModeBroadcastReceiver);
         unregisterReceiver(bluetoothBroadcastReceiver);

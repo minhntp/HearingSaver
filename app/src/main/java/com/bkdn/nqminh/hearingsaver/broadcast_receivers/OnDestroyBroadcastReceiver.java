@@ -16,18 +16,15 @@ public class OnDestroyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        settings = context.getSharedPreferences(Constants.settingsData, Context.MODE_PRIVATE);
-        boolean isDisabled = settings.getBoolean(Constants.isDisabled, false);
+        settings = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
+        boolean isServiceEnabled = settings.getBoolean(Constants.IS_SERVICE_ENABLED, false);
 
-        if (!isDisabled) {
-            Toast.makeText(context, Constants.service_destroyed, Toast.LENGTH_SHORT).show();
+        if (isServiceEnabled) {
+            Toast.makeText(context, Constants.TOAST_RESTART_SERVICE, Toast.LENGTH_SHORT).show();
 
             Intent myServiceIntent = new Intent(context, MyService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(myServiceIntent);
-            } else {
-                context.startService(myServiceIntent);
-            }
+            myServiceIntent.putExtra(Constants.INTENT_RESTART_SERVICE, true);
+            context.startForegroundService(myServiceIntent);
         }
     }
 }

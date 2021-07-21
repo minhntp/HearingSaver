@@ -18,14 +18,14 @@ public class OnBootCompleteBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
             SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
 
-            boolean isDisabled = sharedPreferences.getBoolean(Constants.isDisabled, false);
+            boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.IS_SERVICE_ENABLED, false);
 
-            if (!isDisabled) {
-                Toast.makeText(context, Constants.on_boot, Toast.LENGTH_SHORT).show();
+            if (isServiceEnabled) {
+                Toast.makeText(context, Constants.TOAST_ON_BOOT, Toast.LENGTH_SHORT).show();
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Constants.firstRunMyService, true);
-                editor.putBoolean(Constants.firstRunPlug, true);
+                editor.putBoolean(Constants.FIRST_RUN_0, true);
+                editor.putBoolean(Constants.FIRST_RUN_1, true);
                 editor.apply();
 
                 Intent myServiceIntent = new Intent(context, MyService.class);

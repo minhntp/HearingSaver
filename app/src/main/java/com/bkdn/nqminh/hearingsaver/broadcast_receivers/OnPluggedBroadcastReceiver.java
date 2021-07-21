@@ -22,15 +22,15 @@ public class OnPluggedBroadcastReceiver extends BroadcastReceiver {
         if ((intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG))) {
 
             SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
-            boolean isFirstRunPlug = sharedPreferences.getBoolean(Constants.firstRunPlug, true);
+            boolean isFirstRunPlug = sharedPreferences.getBoolean(Constants.FIRST_RUN_1, true);
             int state = intent.getIntExtra("state",0);
             int savedState = Operator.getInstance(context).getHeadsetState();
 
             if(isFirstRunPlug) {
-                sharedPreferences.edit().putBoolean(Constants.firstRunPlug, false).apply();
+                sharedPreferences.edit().putBoolean(Constants.FIRST_RUN_1, false).apply();
             } else if (savedState != -1 && state != savedState){
                 int messageType = state == 0 ? 0 : 1;
-                Operator.getInstance(context).adjustOnPlugging(context, messageType);
+                Operator.getInstance(context).adjustOnPlugStateChanged(context, messageType);
             }
             Operator.getInstance(context).setHeadsetState(state);
         }
