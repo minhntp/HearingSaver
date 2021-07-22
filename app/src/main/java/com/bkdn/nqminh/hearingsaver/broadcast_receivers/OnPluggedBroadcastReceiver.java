@@ -23,7 +23,7 @@ public class OnPluggedBroadcastReceiver extends BroadcastReceiver {
         // when an app register a broadcast receiver
         // that uses AudioManager.ACTION_HEADSET_PLUG
 
-        // DECIDE whether should call Operator's handlePlugStateChange() to adjust volume or not
+        // DECIDE whether or not to call Operator's handlePlugStateChange() to adjust volume
 
         if ((intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG))) {
 
@@ -35,14 +35,17 @@ public class OnPluggedBroadcastReceiver extends BroadcastReceiver {
             boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, false);
 
             if(isFirstRun) {
-                // Set volumes
-                Operator.getInstance(context).handlePlugStateChange(context, Constants.MESSAGE_FIRST_RUN);
+                // On first run, volumes are already adjusted by MyService,
+                // before registering broadcast listeners
+
                 // Set isFirstRun to false
                 editor.putBoolean(Constants.SP_IS_FIRST_RUN, false);
                 // Save current plug state to SharedPreferences
                 editor.putInt(Constants.SP_PREVIOUS_PLUG_STATE, currentPlugState);
             } else {
-                // if current plug state != shared preference plug state:
+                // Adjust volumes if it's not first run
+                // and
+                // current state != saved state
                 int previousPlugState = sharedPreferences.getInt(Constants.SP_PREVIOUS_PLUG_STATE, -1);
                 if(currentPlugState != previousPlugState) {
                     String message;

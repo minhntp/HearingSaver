@@ -63,12 +63,13 @@ public class MainActivity extends Activity {
     }
 
     private void initialize() {
+        connectViews();
+        addEvents();
 
         sharedPreferences = Operator.getInstance(getApplicationContext()).getSharedPreferences();
         editor = Operator.getInstance(getApplicationContext()).getEditor();
 
-        connectViews();
-        addEvents();
+        setSavedSettings();
 
         mainServiceIntent = new Intent(this, MyService.class);
 
@@ -78,7 +79,7 @@ public class MainActivity extends Activity {
             startForegroundService(mainServiceIntent);
         }
 
-        setPreviousStatus();
+        showStatus();
     }
 
     private void connectViews() {
@@ -124,7 +125,7 @@ public class MainActivity extends Activity {
 //        }
 //    }
 
-    private void setPreviousStatus() {
+    private void setSavedSettings() {
         checkboxRingtonePlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_RING_PLUGGED, true));
         checkboxRingtoneUnplugged.setChecked(sharedPreferences.getBoolean(Constants.CB_RING_UNPLUGGED, true));
         checkboxNotificationPlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_NOTI_PLUGGED, true));
@@ -151,8 +152,6 @@ public class MainActivity extends Activity {
         volumeFeedbackUnplugged.setText(String.valueOf(seekbarFeedbackUnplugged.getProgress()));
         volumeMediaPlugged.setText(String.valueOf(seekbarMediaPlugged.getProgress()));
         volumeMediaUnplugged.setText(String.valueOf(seekbarMediaUnplugged.getProgress()));
-
-        handleServiceStateChange();
     }
 
     private void addEvents() {
@@ -286,14 +285,12 @@ public class MainActivity extends Activity {
         });
 
         buttonEnable.setOnClickListener(view -> {
-            saveSettings(true);
-            handleServiceStateChange();
+            handleServiceStateChange(true);
             Toast.makeText(this, Constants.TOAST_ENABLE, Toast.LENGTH_SHORT).show();
         });
 
         buttonDisable.setOnClickListener(view -> {
-            saveSettings(false);
-            handleServiceStateChange();
+            handleServiceStateChange(false);
             Toast.makeText(this, Constants.TOAST_DISABLE, Toast.LENGTH_SHORT).show();
         });
 
@@ -303,7 +300,14 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void handleServiceStateChange() {
+    private void handleServiceStateChange( boolean isEnabled) {
+        saveSettings();
+        saveSettings(isEnabled);
+        startOrStopService(isEnabled);
+        showStatus();
+    }
+
+    private void showStatus() {
 
         // Check again to see if sharedPreference is set
         boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
@@ -313,14 +317,11 @@ public class MainActivity extends Activity {
             textViewSettingStatus.setTextColor(getColor(R.color.blue));
             buttonEnable.setEnabled(false);
             buttonDisable.setEnabled(true);
-
-            startForegroundService(mainServiceIntent);
         } else {
             textViewSettingStatus.setText(R.string.status_service_disabled);
             textViewSettingStatus.setTextColor(Color.RED);
             buttonDisable.setEnabled(false);
             buttonEnable.setEnabled(true);
-            stopService(mainServiceIntent);
         }
 
         if (Operator.getInstance(getApplicationContext()).isServiceRunning()) {
@@ -356,6 +357,14 @@ public class MainActivity extends Activity {
         editor.putBoolean(Constants.SP_IS_SERVICE_ENABLED, isServiceEnabled);
         editor.putBoolean(Constants.SP_IS_FIRST_RUN, isServiceEnabled);
         editor.commit();
+    }
+
+    private void startOrStopService(boolean isEnabled) {
+        if(isEnabled){
+            startForegroundService(mainServiceIntent);
+        } else {
+            stopService(mainServiceIntent);
+        }
     }
 
     @Override

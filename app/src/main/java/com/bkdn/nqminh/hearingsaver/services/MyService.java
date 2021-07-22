@@ -55,15 +55,16 @@ public class MyService extends Service {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(Constants.NOTIFICATION_TITLE)
                 .setContentText(Constants.NOTIFICATION_MESSAGE)
-//                .setPriority(NotificationCompat.PRIORITY_MIN)=
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setContentIntent(notificationPendingIntent)
                 .setOngoing(true)
                 .setSubText(Constants.NOTIFICATION_MESSAGE);
 
         // Build channel
-        int importance = NotificationManager.IMPORTANCE_MIN;
-        NotificationChannel channel =
-                new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+        NotificationChannel channel = new NotificationChannel(
+                Constants.CHANNEL_ID,
+                Constants.CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_LOW);
         channel.setDescription(Constants.CHANNEL_DESCRIPTION);
 
         // Create/Register channel
@@ -78,11 +79,13 @@ public class MyService extends Service {
         // ADJUST VOLUME ON FIRST RUN
         Context context = getApplicationContext();
         SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
+
         boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, false);
 
         if (isFirstRun) {
             Operator.getInstance(context).handlePlugStateChange(context, Constants.MESSAGE_FIRST_RUN);
-            sharedPreferences.edit().putBoolean(Constants.SP_IS_FIRST_RUN, false).apply();
+            // Keep isFirstRun to be true, so that HeadsetPluggedListener will not
+            // adjust the volume again
         }
 
         // HEADSET_PLUG Broadcast Receiver

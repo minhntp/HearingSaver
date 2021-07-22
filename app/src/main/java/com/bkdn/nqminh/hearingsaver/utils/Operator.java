@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
@@ -149,6 +150,7 @@ public class Operator {
     }
 
     public void handlePlugStateChange(Context context, String stateChangeTypeMessage) {
+        Log.d(Constants.DEBUG_TAG, "adjusting volumes with message: " + stateChangeTypeMessage);
 
         // MESSAGE TYPE
         //  wire unplugged
