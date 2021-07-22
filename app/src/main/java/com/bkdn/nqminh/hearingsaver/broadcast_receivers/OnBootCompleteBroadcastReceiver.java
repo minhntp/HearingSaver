@@ -30,7 +30,10 @@ public class OnBootCompleteBroadcastReceiver extends BroadcastReceiver {
             boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
             if(isServiceEnabled) {
-                sharedPreferences.edit().putBoolean(Constants.SP_IS_FIRST_RUN, true).apply();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Constants.SP_IS_FIRST_RUN, true);
+                editor.putBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, false);
+                editor.apply();
 
                 Intent myServiceIntent = new Intent(context, MyService.class);
                 context.startForegroundService(myServiceIntent);

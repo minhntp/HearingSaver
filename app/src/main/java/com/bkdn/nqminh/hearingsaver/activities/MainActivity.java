@@ -356,6 +356,7 @@ public class MainActivity extends Activity {
     private void saveSettings(boolean isServiceEnabled) {
         editor.putBoolean(Constants.SP_IS_SERVICE_ENABLED, isServiceEnabled);
         editor.putBoolean(Constants.SP_IS_FIRST_RUN, isServiceEnabled);
+        editor.putBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, !isServiceEnabled);
         editor.commit();
     }
 

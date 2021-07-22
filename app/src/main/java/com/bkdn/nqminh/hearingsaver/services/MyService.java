@@ -37,8 +37,12 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        // -----------------------------------------------------------------------------------------
-        // NOTIFICATION
+        adjustVolumesOnFirstRun();
+        buildAndShowNotification();
+        registerBroadcastReceivers();
+    }
+
+    private void buildAndShowNotification() {
 
         // Intent for opening MainActivity when notification is clicked
         Intent notificationIntent = Operator.getInstance(getApplicationContext()).getRunningIntent();
@@ -55,7 +59,7 @@ public class MyService extends Service {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(Constants.NOTIFICATION_TITLE)
                 .setContentText(Constants.NOTIFICATION_MESSAGE)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentIntent(notificationPendingIntent)
                 .setOngoing(true)
                 .setSubText(Constants.NOTIFICATION_MESSAGE);
@@ -64,7 +68,7 @@ public class MyService extends Service {
         NotificationChannel channel = new NotificationChannel(
                 Constants.CHANNEL_ID,
                 Constants.CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_LOW);
+                NotificationManager.IMPORTANCE_MIN);
         channel.setDescription(Constants.CHANNEL_DESCRIPTION);
 
         // Create/Register channel
@@ -74,22 +78,24 @@ public class MyService extends Service {
         // Show notification
 //        NotificationManagerCompat.from(this).notify(Constants.NOTIFICATION_ID, notificationBuilder.build());
         startForeground(Constants.NOTIFICATION_ID, notificationBuilder.build());
+    }
 
-        //------------------------------------------------------------------------------------------
-        // ADJUST VOLUME ON FIRST RUN
+    private void adjustVolumesOnFirstRun() {
         Context context = getApplicationContext();
         SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
 
-        boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, false);
+        boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, true);
+        boolean adjustedOnFirstRun = sharedPreferences.getBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, false);
 
-        if (isFirstRun) {
+        if (isFirstRun && !adjustedOnFirstRun) {
             Operator.getInstance(context).handlePlugStateChange(context, Constants.MESSAGE_FIRST_RUN);
-            // Keep isFirstRun to be true, so that HeadsetPluggedListener will not
-            // adjust the volume again
+            sharedPreferences.edit().putBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, true).apply();
         }
+    }
 
+    private void registerBroadcastReceivers() {
         // HEADSET_PLUG Broadcast Receiver
-        headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
+                headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
         headsetBroadcastReceiver = new OnPluggedBroadcastReceiver();
         registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter);
 

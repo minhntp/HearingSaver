@@ -32,7 +32,7 @@ public class OnPluggedBroadcastReceiver extends BroadcastReceiver {
 
             int currentPlugState = intent.getIntExtra("state", -1);
 
-            boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, false);
+            boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, true);
 
             if(isFirstRun) {
                 // On first run, volumes are already adjusted by MyService,

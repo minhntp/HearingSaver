@@ -24,6 +24,7 @@ public class Constants {
     public static final String CB_MEDIA_UNPLUGGED = "check8";
     public static final String SP_HEADSET_STATE = "headset-state";
     public static final String SP_IS_FIRST_RUN = "is-first-run";
+    public static final String SP_ADJUSTED_ON_FIRST_RUN = "adjusted-on-first-run";
     public static final String SP_PREVIOUS_PLUG_STATE = "previous-plug-state ";
     public static final String SP_POSTPONED_PLUG_STATE = "postponed-plug-state"; // Used for pending adjustments
     public static final String STATE_PLUGGED = "state-plugged";

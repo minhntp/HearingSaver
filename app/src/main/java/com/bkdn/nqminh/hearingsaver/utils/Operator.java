@@ -245,6 +245,7 @@ public class Operator {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public Intent getRunningIntent() {
 
         Intent runningIntent = null;
@@ -270,6 +271,7 @@ public class Operator {
         return runningIntent;
     }
 
+    @SuppressWarnings("deprecation")
     public boolean isServiceRunning() {
         boolean isServiceRunning = false;
 
