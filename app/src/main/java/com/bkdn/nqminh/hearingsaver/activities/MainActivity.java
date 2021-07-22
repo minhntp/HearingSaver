@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
@@ -77,6 +78,7 @@ public class MainActivity extends Activity {
 
         if (isServiceEnabled) {
             startForegroundService(mainServiceIntent);
+            Log.d(Constants.DEBUG_TAG, "started service from main activity");
         }
 
         showStatus();
@@ -363,16 +365,19 @@ public class MainActivity extends Activity {
     private void startOrStopService(boolean isEnabled) {
         if(isEnabled){
             startForegroundService(mainServiceIntent);
+            Log.d(Constants.DEBUG_TAG, "start service from button");
         } else {
             stopService(mainServiceIntent);
+            Log.d(Constants.DEBUG_TAG, "stop service from button");
         }
     }
 
     @Override
     protected void onDestroy() {
-        Toast.makeText(this, Constants.TOAST_ACTIVITY_DESTROYED, Toast.LENGTH_SHORT).show();
-        stopService(mainServiceIntent);
         super.onDestroy();
+
+        Log.d(Constants.DEBUG_TAG, "Main activity on destroy");
+        stopService(mainServiceIntent);
     }
 
     @Override

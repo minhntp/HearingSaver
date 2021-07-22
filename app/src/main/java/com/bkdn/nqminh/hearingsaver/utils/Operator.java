@@ -246,32 +246,6 @@ public class Operator {
     }
 
     @SuppressWarnings("deprecation")
-    public Intent getRunningIntent() {
-
-        Intent runningIntent = null;
-
-        // Get the root activity of the task that your activity is running in
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
-
-        if (tasks.size() > 0) {
-            ComponentName foundActivity = tasks.get(0).baseActivity;
-
-            String classNameOfFoundTask = foundActivity.getClassName();
-            String classNameOfMainActivity = MainActivity.class.getName();
-
-            if (classNameOfFoundTask.equals(classNameOfMainActivity)) {
-                runningIntent = new Intent();
-                runningIntent.setComponent(foundActivity);
-                // Set the action and category so it appears that the app is being launched
-                runningIntent.setAction(Intent.ACTION_MAIN);
-                runningIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            }
-        }
-
-        return runningIntent;
-    }
-
-    @SuppressWarnings("deprecation")
     public boolean isServiceRunning() {
         boolean isServiceRunning = false;
 

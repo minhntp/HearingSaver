@@ -72,7 +72,7 @@ public class Constants {
 
     // ---------------------------------------------------------------------------------------------
     // TAG
-    public static final String DEBUG_TAG = "debug";
+    public static final String DEBUG_TAG = "dbg";
 
     // MESSAGES BETWEEN CLASSES
     public static final String MESSAGE_WIRE_PLUGGED = "wire-plugged";

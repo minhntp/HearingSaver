@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -26,7 +27,6 @@ import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangedBroad
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
-@TargetApi(Build.VERSION_CODES.O)
 public class MyService extends Service {
     IntentFilter headsetReceiverFilter, bluetoothReceiverFilter, ringerModeReceiverFilter;
     OnPluggedBroadcastReceiver headsetBroadcastReceiver;
@@ -37,23 +37,23 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        adjustVolumesOnFirstRun();
         buildAndShowNotification();
+        adjustVolumesOnFirstRun();
         registerBroadcastReceivers();
     }
 
     private void buildAndShowNotification() {
 
-        // Intent for opening MainActivity when notification is clicked
-        Intent notificationIntent = Operator.getInstance(getApplicationContext()).getRunningIntent();
-        if (notificationIntent == null) {
-            notificationIntent = new Intent(this, MainActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        }
+        // Intent for bring up MainActivity when notification is clicked
+        // If MainActivity is in background, bring it to front
+        // If not, start it.
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN); // Important
+        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER); // Important
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent notificationPendingIntent = PendingIntent
-                .getActivity(this, 0, notificationIntent, 0);
-
+                .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // Build notification
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -95,7 +95,7 @@ public class MyService extends Service {
 
     private void registerBroadcastReceivers() {
         // HEADSET_PLUG Broadcast Receiver
-                headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
+        headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
         headsetBroadcastReceiver = new OnPluggedBroadcastReceiver();
         registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter);
 
@@ -121,14 +121,14 @@ public class MyService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        Toast.makeText(this, Constants.TOAST_SERVICE_DESTROYED, Toast.LENGTH_SHORT).show();
-
+//        Log.d(Constants.DEBUG_TAG, "Service on destroy");
         unregisterReceiver(headsetBroadcastReceiver);
         unregisterReceiver(ringerModeBroadcastReceiver);
         unregisterReceiver(bluetoothBroadcastReceiver);
 
         Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
         sendBroadcast(onDestroyBroadcastReceiverIntent);
+
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bkdn.nqminh.hearingsaver.services.MyService;
@@ -37,6 +38,7 @@ public class OnBootCompleteBroadcastReceiver extends BroadcastReceiver {
 
                 Intent myServiceIntent = new Intent(context, MyService.class);
                 context.startForegroundService(myServiceIntent);
+                Log.d(Constants.DEBUG_TAG, "start service from OnBootComplete");
 
                 Toast.makeText(context, Constants.TOAST_ON_BOOT_COMPLETED, Toast.LENGTH_SHORT).show();
             }
