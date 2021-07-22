@@ -169,8 +169,6 @@ public class Operator {
 
             getEditor().putBoolean(Constants.SP_POSTPONED_PLUG_STATE, (pluggedDevices > 0)).apply();
 
-            showToastOnReceivedMessage(context, stateChangeTypeMessage, pluggedDevices);
-
             // Set Media volume first
             setOnlyMediaVolume(pluggedDevices > 0);
 
@@ -179,46 +177,53 @@ public class Operator {
             boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
                     currentRingerMode == AudioManager.RINGER_MODE_SILENT;
 
+            String silentModeMessage;
             setPending(isSilentOrVibrate);
 
             if (isSilentOrVibrate) {
-                Toast.makeText(context, Constants.TOAST_POSTPONE, Toast.LENGTH_LONG).show();
+                silentModeMessage = Constants.TOAST_POSTPONE;
             } else {
                 setAllVolumesExceptMedia(pluggedDevices > 0);
-                Toast.makeText(context, Constants.TOAST_VOLUME_ADJUSTED, Toast.LENGTH_SHORT).show();
+                silentModeMessage = Constants.TOAST_VOLUME_ADJUSTED;
             }
+
+            // Show toast
+            String toastMessage  = getToastOnReceivedMessage(stateChangeTypeMessage, pluggedDevices)
+                    + "\n" + silentModeMessage;
+            Toast.makeText(context, toastMessage , Toast.LENGTH_SHORT).show();
         }
 //        }
     }
 
-    private void showToastOnReceivedMessage(Context context, String message, int pluggedDevices) {
+    private String getToastOnReceivedMessage(String message, int pluggedDevices) {
+        String toast;
         switch (message) {
             case Constants.MESSAGE_WIRE_UNPLUGGED:
-                Toast.makeText(context, Constants.TOAST_JACK_DISCONNECTED, Toast.LENGTH_SHORT).show();
+                toast = Constants.TOAST_JACK_DISCONNECTED;
                 break;
             case Constants.MESSAGE_WIRE_PLUGGED:
-                Toast.makeText(context, Constants.TOAST_JACK_CONNECTED, Toast.LENGTH_SHORT).show();
+                toast = Constants.TOAST_JACK_CONNECTED;
                 break;
             case Constants.MESSAGE_BLUETOOTH_DISCONNECTED:
-                Toast.makeText(context, Constants.TOAST_BLUETOOTH_DISCONNECTED, Toast.LENGTH_SHORT).show();
+                toast = Constants.TOAST_BLUETOOTH_DISCONNECTED;
                 break;
             case Constants.MESSAGE_BLUETOOTH_CONNECTED:
-                Toast.makeText(context, Constants.TOAST_BLUETOOTH_CONNECTED, Toast.LENGTH_SHORT).show();
+                toast = Constants.TOAST_BLUETOOTH_CONNECTED;
                 break;
             case Constants.MESSAGE_FIRST_RUN:
                 if (pluggedDevices > 1) {
-                    Toast.makeText(context,
-                            pluggedDevices + Constants.TOAST_DEVICES_CONNECTED
-                            , Toast.LENGTH_SHORT).show();
+                    toast = pluggedDevices + Constants.TOAST_DEVICES_CONNECTED;
                 } else if (pluggedDevices == 1) {
-                    Toast.makeText(context, Constants.TOAST_ONE_DEVICE_CONNECTED, Toast.LENGTH_SHORT).show();
+                    toast = Constants.TOAST_ONE_DEVICE_CONNECTED;
                 } else {
-                    Toast.makeText(context, Constants.TOAST_NO_DEVICES_CONNECTED, Toast.LENGTH_SHORT).show();
+                    toast = Constants.TOAST_NO_DEVICES_CONNECTED;
                 }
                 break;
             default:
-                // Do something
+                toast = "";
         }
+
+        return toast;
     }
 
     public void adjustOnRingerModeChanged(Context context) {

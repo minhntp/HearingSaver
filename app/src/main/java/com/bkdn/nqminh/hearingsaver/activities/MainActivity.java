@@ -18,7 +18,6 @@ import com.bkdn.nqminh.hearingsaver.utils.Constants;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
 public class MainActivity extends Activity {
-    //    Context context;
     private CheckBox checkboxRingtonePlugged;
     private CheckBox checkboxRingtoneUnplugged;
     private CheckBox checkboxNotificationPlugged;
@@ -50,8 +49,6 @@ public class MainActivity extends Activity {
     private Button buttonDisable;
     private Button buttonSave;
 
-    private Intent mainServiceIntent;
-
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -72,11 +69,10 @@ public class MainActivity extends Activity {
 
         setSavedSettings();
 
-        mainServiceIntent = new Intent(this, MyService.class);
-
         boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
+            Intent mainServiceIntent = new Intent(this, MyService.class);
             startForegroundService(mainServiceIntent);
             Log.d(Constants.DEBUG_TAG, "started service from main activity");
         }
@@ -118,14 +114,6 @@ public class MainActivity extends Activity {
         buttonDisable = findViewById(R.id.disable_button);
         buttonSave = findViewById(R.id.save_button);
     }
-
-//    private void setDefaultOnFirstRun() {
-//        if (!sharedPreferences.getBoolean(Constants.firstRun, false)) {
-//            editor.putBoolean(Constants.settingsDisabled, true);
-//            editor.putBoolean(Constants.firstRun, true);
-//            editor.commit();
-//        }
-//    }
 
     private void setSavedSettings() {
         checkboxRingtonePlugged.setChecked(sharedPreferences.getBoolean(Constants.CB_RING_PLUGGED, true));
@@ -363,6 +351,7 @@ public class MainActivity extends Activity {
     }
 
     private void startOrStopService(boolean isEnabled) {
+        Intent mainServiceIntent = new Intent(this, MyService.class);
         if(isEnabled){
             startForegroundService(mainServiceIntent);
             Log.d(Constants.DEBUG_TAG, "start service from button");
@@ -377,7 +366,10 @@ public class MainActivity extends Activity {
         super.onDestroy();
 
         Log.d(Constants.DEBUG_TAG, "Main activity on destroy");
-        stopService(mainServiceIntent);
+//        Intent mainServiceIntent = new Intent(this, MyService.class);
+//        boolean isServiceStopped = stopService(mainServiceIntent);
+//        Log.d(Constants.DEBUG_TAG, "service stopped by MainActivity's onDestroy(): " + isServiceStopped);
+
     }
 
     @Override

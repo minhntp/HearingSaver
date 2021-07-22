@@ -43,13 +43,13 @@ public class Constants {
     public static final String TOAST_ACTIVITY_DESTROYED = "Main Activity is destroyed!";
     public static final String TOAST_SERVICE_DESTROYED = "Service is destroyed!";
     public static final String TOAST_RESTART_SERVICE = "Restarting Hearing Saver...";
-    public static final String TOAST_JACK_DISCONNECTED = "Headphone jack is disconnected!";
-    public static final String TOAST_JACK_CONNECTED = "Headphone jack is connected!";
-    public static final String TOAST_BLUETOOTH_DISCONNECTED = "Bluetooth device is disconnected!";
-    public static final String TOAST_BLUETOOTH_CONNECTED = "Bluetooth device is connected!";
-    public static final String TOAST_ONE_DEVICE_CONNECTED = "One device is connected!";
-    public static final String TOAST_DEVICES_CONNECTED = " devices are connected!";
-    public static final String TOAST_NO_DEVICES_CONNECTED = "No device is connected!";
+    public static final String TOAST_JACK_DISCONNECTED = "Headphone jack is disconnected.";
+    public static final String TOAST_JACK_CONNECTED = "Headphone jack is connected.";
+    public static final String TOAST_BLUETOOTH_DISCONNECTED = "Bluetooth device is disconnected.";
+    public static final String TOAST_BLUETOOTH_CONNECTED = "Bluetooth device is connected.";
+    public static final String TOAST_ONE_DEVICE_CONNECTED = "One device is connected.";
+    public static final String TOAST_DEVICES_CONNECTED = " devices are connected.";
+    public static final String TOAST_NO_DEVICES_CONNECTED = "No device is connected.";
 
     // ---------------------------------------------------------------------------------------------
     // SETTINGS

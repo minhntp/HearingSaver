@@ -7,7 +7,7 @@ import android.media.AudioManager;
 
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
-public class OnRingerModeChangedBroadcastReceiver extends BroadcastReceiver {
+public class OnRingerModeChangeBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

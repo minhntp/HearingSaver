@@ -1,6 +1,5 @@
 package com.bkdn.nqminh.hearingsaver.services;
 
-import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,14 +21,14 @@ import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnBluetoothBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnDestroyBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnPluggedBroadcastReceiver;
-import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangedBroadcastReceiver;
+import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangeBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
 public class MyService extends Service {
     IntentFilter headsetReceiverFilter, bluetoothReceiverFilter, ringerModeReceiverFilter;
     OnPluggedBroadcastReceiver headsetBroadcastReceiver;
-    OnRingerModeChangedBroadcastReceiver ringerModeBroadcastReceiver;
+    OnRingerModeChangeBroadcastReceiver ringerModeBroadcastReceiver;
     OnBluetoothBroadcastReceiver bluetoothBroadcastReceiver;
 
     @Override
@@ -45,8 +43,8 @@ public class MyService extends Service {
     private void buildAndShowNotification() {
 
         // Intent for bring up MainActivity when notification is clicked
-        // If MainActivity is in background, bring it to front
-        // If not, start it.
+        // If MainActivity is in background => bring it to front
+        // If not => start it.
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN); // Important
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER); // Important
@@ -54,6 +52,7 @@ public class MyService extends Service {
 
         PendingIntent notificationPendingIntent = PendingIntent
                 .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // Build notification
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -93,6 +92,7 @@ public class MyService extends Service {
         }
     }
 
+
     private void registerBroadcastReceivers() {
         // HEADSET_PLUG Broadcast Receiver
         headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
@@ -106,8 +106,14 @@ public class MyService extends Service {
 
         // RINGER_MODE_CHANGED Broadcast Receiver
         ringerModeReceiverFilter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        ringerModeBroadcastReceiver = new OnRingerModeChangedBroadcastReceiver();
+        ringerModeBroadcastReceiver = new OnRingerModeChangeBroadcastReceiver();
         registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter);
+    }
+
+    public void unregisterBroadcastReceivers() {
+        unregisterReceiver(headsetBroadcastReceiver);
+        unregisterReceiver(ringerModeBroadcastReceiver);
+        unregisterReceiver(bluetoothBroadcastReceiver);
     }
 
     @Override
@@ -119,16 +125,14 @@ public class MyService extends Service {
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
-
-//        Log.d(Constants.DEBUG_TAG, "Service on destroy");
-        unregisterReceiver(headsetBroadcastReceiver);
-        unregisterReceiver(ringerModeBroadcastReceiver);
-        unregisterReceiver(bluetoothBroadcastReceiver);
-
+        Log.d(Constants.DEBUG_TAG, "Service onDestroy()");
+//
+        unregisterBroadcastReceivers();
+//
         Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
         sendBroadcast(onDestroyBroadcastReceiverIntent);
-
     }
 
     @Override
