@@ -55,6 +55,7 @@ public class Constants {
     // SETTINGS
     public static final int DEFAULT_VOLUME_HEADPHONE = 3;
     public static final int DEFAULT_VOLUME_SPEAKER = 13;
+    public static final int DEFAULT_VOLUME_SPEAKER_MEDIA = 5;
 
     // ---------------------------------------------------------------------------------------------
     // NOTIFICATION

@@ -132,16 +132,7 @@ public class MainActivity extends Activity {
         seekbarFeedbackPlugged.setProgress(sharedPreferences.getInt(Constants.SKB_FEEDBACK_PLUGGED, Constants.DEFAULT_VOLUME_HEADPHONE));
         seekbarFeedbackUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_FEEDBACK_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER));
         seekbarMediaPlugged.setProgress(sharedPreferences.getInt(Constants.SKB_MEDIA_PLUGGED, Constants.DEFAULT_VOLUME_HEADPHONE));
-        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_MEDIA_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER));
-
-        volumeRingtonePlugged.setText(String.valueOf(seekbarRingtonePlugged.getProgress()));
-        volumeRingtoneUnplugged.setText(String.valueOf(seekbarRingtoneUnplugged.getProgress()));
-        volumeNotificationPlugged.setText(String.valueOf(seekbarNotificationPlugged.getProgress()));
-        volumeNotificationUnplugged.setText(String.valueOf(seekbarNotificationUnplugged.getProgress()));
-        volumeFeedbackPlugged.setText(String.valueOf(seekbarFeedbackPlugged.getProgress()));
-        volumeFeedbackUnplugged.setText(String.valueOf(seekbarFeedbackUnplugged.getProgress()));
-        volumeMediaPlugged.setText(String.valueOf(seekbarMediaPlugged.getProgress()));
-        volumeMediaUnplugged.setText(String.valueOf(seekbarMediaUnplugged.getProgress()));
+        seekbarMediaUnplugged.setProgress(sharedPreferences.getInt(Constants.SKB_MEDIA_UNPLUGGED, Constants.DEFAULT_VOLUME_SPEAKER_MEDIA));
     }
 
     private void addEvents() {

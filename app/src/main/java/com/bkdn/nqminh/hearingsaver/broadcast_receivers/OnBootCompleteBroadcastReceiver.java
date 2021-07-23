@@ -40,7 +40,7 @@ public class OnBootCompleteBroadcastReceiver extends BroadcastReceiver {
                 context.startForegroundService(myServiceIntent);
                 Log.d(Constants.DEBUG_TAG, "start service from OnBootComplete");
 
-//                Toast.makeText(context, Constants.TOAST_ON_BOOT_COMPLETED, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, Constants.TOAST_ON_BOOT_COMPLETED, Toast.LENGTH_LONG).show();
             }
         }
     }

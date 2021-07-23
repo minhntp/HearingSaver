@@ -56,8 +56,8 @@ public class MyService extends Service {
         // Build notification
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(Constants.NOTIFICATION_TITLE)
-                .setContentText(Constants.NOTIFICATION_MESSAGE)
+//                .setContentTitle(Constants.NOTIFICATION_TITLE)
+//                .setContentText(Constants.NOTIFICATION_MESSAGE)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentIntent(notificationPendingIntent)
                 .setOngoing(true)
@@ -133,6 +133,8 @@ public class MyService extends Service {
 //
         Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
         sendBroadcast(onDestroyBroadcastReceiverIntent);
+
+        Toast.makeText(this, "Service onDestroy()", Toast.LENGTH_SHORT).show();
     }
 
     @Override

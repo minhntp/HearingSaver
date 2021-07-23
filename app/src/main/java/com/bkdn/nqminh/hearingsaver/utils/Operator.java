@@ -190,7 +190,7 @@ public class Operator {
             // Show toast
             String toastMessage  = getToastOnReceivedMessage(stateChangeTypeMessage, pluggedDevices)
                     + "\n" + silentModeMessage;
-            Toast.makeText(context, toastMessage , Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, toastMessage , Toast.LENGTH_LONG).show();
         }
 //        }
     }
@@ -245,7 +245,7 @@ public class Operator {
                 setAllVolumesExceptMedia(isPlugged);
 
                 setPending(false);
-                Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_LONG).show();
             }
         }
     }
