@@ -125,8 +125,11 @@ public class MyService extends Service {
 
     @Override
     public void onDestroy() {
-
+        Log.d(Constants.DEBUG_TAG, "Service onDestroy()");
         super.onDestroy();
+    }
+
+    private void tempOnDestroy() {
         Log.d(Constants.DEBUG_TAG, "Service onDestroy()");
 //
         unregisterBroadcastReceivers();
