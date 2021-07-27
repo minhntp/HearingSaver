@@ -1,6 +1,9 @@
 package com.bkdn.nqminh.hearingsaver.activities;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,6 +14,8 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.services.MyService;
@@ -57,7 +62,28 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        askForPermissions();
         initialize();
+    }
+
+    private void askForPermissions() {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (!notificationManager.isNotificationPolicyAccessGranted()) {
+//            Toast.makeText(this, Constants.REQUEST_ACCESS_DO_NOT_DISTURB, Toast.LENGTH_LONG).show();
+
+            new AlertDialog.Builder(this)
+                    .setTitle(Constants.REQUEST_ACCESS_TITLE)
+                    .setMessage(Constants.REQUEST_ACCESS_DO_NOT_DISTURB)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // Start intent to setting activity
+                        Intent intent = new Intent(
+                                android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                        startActivity(intent);
+                    })
+                    .show();
+        }
     }
 
     private void initialize() {
@@ -281,7 +307,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void handleServiceStateChange( boolean isEnabled) {
+    private void handleServiceStateChange(boolean isEnabled) {
         saveSettings();
         saveSettings(isEnabled);
         startOrStopService(isEnabled);
@@ -314,7 +340,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private  void saveSettings() {
+    private void saveSettings() {
         editor.putInt(Constants.SKB_RING_PLUGGED, seekbarRingtonePlugged.getProgress());
         editor.putInt(Constants.SKB_RING_UNPLUGGED, seekbarRingtoneUnplugged.getProgress());
         editor.putInt(Constants.SKB_NOTI_PLUGGED, seekbarNotificationPlugged.getProgress());
@@ -343,7 +369,7 @@ public class MainActivity extends Activity {
 
     private void startOrStopService(boolean isEnabled) {
         Intent mainServiceIntent = new Intent(this, MyService.class);
-        if(isEnabled){
+        if (isEnabled) {
             startForegroundService(mainServiceIntent);
             Log.d(Constants.DEBUG_TAG, "start service from button");
         } else {

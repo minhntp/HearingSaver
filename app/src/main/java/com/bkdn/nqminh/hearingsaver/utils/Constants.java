@@ -51,6 +51,9 @@ public class Constants {
     public static final String TOAST_DEVICES_CONNECTED = " devices are connected.";
     public static final String TOAST_NO_DEVICES_CONNECTED = "No device is connected.";
 
+    public static final String REQUEST_ACCESS_DO_NOT_DISTURB = "Please allow access to Do Not Disturb settings";
+    public static final String REQUEST_ACCESS_TITLE = "Allow access";
+
     // ---------------------------------------------------------------------------------------------
     // SETTINGS
     public static final int DEFAULT_VOLUME_HEADPHONE = 3;
