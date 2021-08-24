@@ -188,9 +188,9 @@ public class Operator {
             }
 
             // Show toast
-            String toastMessage  = getToastOnReceivedMessage(stateChangeTypeMessage, pluggedDevices)
+            String toastMessage = getToastOnReceivedMessage(stateChangeTypeMessage, pluggedDevices)
                     + "\n" + silentModeMessage;
-            Toast.makeText(context, toastMessage , Toast.LENGTH_LONG).show();
+            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show();
         }
 //        }
     }
@@ -226,27 +226,28 @@ public class Operator {
         return toast;
     }
 
-    public void adjustOnRingerModeChanged(Context context) {
+    public void adjustOnRingerModeChanged(Context context, int newRingerMode) {
 
         boolean isPending = sharedPreferences.getBoolean(Constants.SETTINGS_PENDING, false);
 
-        if (isPending) {
-            int currentRingerMode = Operator.getInstance(context).getAudioManager().getRingerMode();
+        if (isPending && (newRingerMode == AudioManager.RINGER_MODE_NORMAL)) {
+//            int currentRingerMode = Operator.getInstance(context).getAudioManager().getRingerMode();
 
-            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
-                    currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+//            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
+//                    currentRingerMode == AudioManager.RINGER_MODE_SILENT;
 
 //            boolean isPlugged = Operator.getInstance(context).getAudioManager().isWiredHeadsetOn();
 
-            if (isSilentOrVibrate) {
+//            if (isSilentOrVibrate) {
 
-                boolean isPlugged = sharedPreferences.getBoolean(Constants.SP_POSTPONED_PLUG_STATE, false);
+            boolean isPlugged = sharedPreferences.getBoolean(Constants.SP_POSTPONED_PLUG_STATE, false);
 
-                setAllVolumesExceptMedia(isPlugged);
+            setAllVolumesExceptMedia(isPlugged);
 
-                setPending(false);
-                Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_LONG).show();
-            }
+            setPending(false);
+
+            Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_LONG).show();
+//            }
         }
     }
 
