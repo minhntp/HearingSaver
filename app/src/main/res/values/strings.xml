@@ -1,11 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Hearing Saver</string>
+    <string name="notification_title">Hearing Saver</string>
+    <string name="notification_message">Service is running</string>
     <string name="status_service_disabled">Service is disabled!</string>
     <string name="status_service_enabled">Service is enabled!</string>
     <string name="status_service_running">Service is running!</string>
     <string name="status_service_not_running">Service is not running!</string>
     <string name="settings_disable">disable</string>
-    <string name="volume1">volume1</string>
+    <string name="volume1" tools:ignore="Typos">volume1</string>
     <string name="volume2">volume2</string>
     <string name="volume3">volume3</string>
     <string name="volume4">volume4</string>
@@ -13,7 +15,7 @@
     <string name="volume6">volume6</string>
     <string name="volume7">volume7</string>
     <string name="volume8">volume8</string>
-    <string name="check1">check1</string>
+    <string name="check1" tools:ignore="Typos">check1</string>
     <string name="check2">check2</string>
     <string name="check3">check3</string>
     <string name="check4">check4</string>

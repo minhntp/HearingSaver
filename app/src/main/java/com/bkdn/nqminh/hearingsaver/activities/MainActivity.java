@@ -3,7 +3,6 @@ package com.bkdn.nqminh.hearingsaver.activities;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -315,7 +314,6 @@ public class MainActivity extends Activity {
     }
 
     private void showStatus() {
-
         // Check again to see if sharedPreference is set
         boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
 
