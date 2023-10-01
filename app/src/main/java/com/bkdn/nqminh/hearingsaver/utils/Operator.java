@@ -1,16 +1,13 @@
 package com.bkdn.nqminh.hearingsaver.utils;
 
 import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
 import com.bkdn.nqminh.hearingsaver.services.MyService;
 
 import java.util.ArrayList;
@@ -38,10 +35,6 @@ public class Operator {
         return instance;
     }
 
-    public AudioManager getAudioManager() {
-        return audioManager;
-    }
-
     public SharedPreferences getSharedPreferences() {
         return sharedPreferences;
     }
@@ -60,61 +53,21 @@ public class Operator {
 
     public void setAllVolumesExceptMedia(boolean isPlugged) {
         if (isPlugged) {
-            if (sharedPreferences.getBoolean(Constants.CB_RING_PLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_RING,
-                        sharedPreferences.getInt(Constants.SKB_RING_PLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
-            if (sharedPreferences.getBoolean(Constants.CB_NOTI_PLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_NOTIFICATION,
-                        sharedPreferences.getInt(Constants.SKB_NOTI_PLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
-            if (sharedPreferences.getBoolean(Constants.CB_FEEDBACK_PLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_SYSTEM,
-                        sharedPreferences.getInt(Constants.SKB_FEEDBACK_PLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
+            setVolumeIfEnabled(Constants.CB_RING_PLUGGED, AudioManager.STREAM_RING, Constants.SKB_RING_PLUGGED);
+            setVolumeIfEnabled(Constants.CB_NOTI_PLUGGED, AudioManager.STREAM_NOTIFICATION, Constants.SKB_NOTI_PLUGGED);
+            setVolumeIfEnabled(Constants.CB_FEEDBACK_PLUGGED, AudioManager.STREAM_SYSTEM, Constants.SKB_FEEDBACK_PLUGGED);
         } else {
-            if (sharedPreferences.getBoolean(Constants.CB_RING_UNPLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_RING,
-                        sharedPreferences.getInt(Constants.SKB_RING_UNPLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
-            if (sharedPreferences.getBoolean(Constants.CB_NOTI_UNPLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_NOTIFICATION,
-                        sharedPreferences.getInt(Constants.SKB_NOTI_UNPLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
-            if (sharedPreferences.getBoolean(Constants.CB_FEEDBACK_UNPLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_SYSTEM,
-                        sharedPreferences.getInt(Constants.SKB_FEEDBACK_UNPLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
+            setVolumeIfEnabled(Constants.CB_RING_UNPLUGGED, AudioManager.STREAM_RING, Constants.SKB_RING_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CB_NOTI_UNPLUGGED, AudioManager.STREAM_NOTIFICATION, Constants.SKB_NOTI_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CB_FEEDBACK_UNPLUGGED, AudioManager.STREAM_SYSTEM, Constants.SKB_FEEDBACK_UNPLUGGED);
         }
     }
 
     public void setOnlyMediaVolume(boolean isPlugged) {
         if (isPlugged) {
-            if (sharedPreferences.getBoolean(Constants.CB_MEDIA_PLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_MUSIC,
-                        sharedPreferences.getInt(Constants.SKB_MEDIA_PLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
+            setVolumeIfEnabled(Constants.CB_MEDIA_PLUGGED, AudioManager.STREAM_MUSIC, Constants.SKB_MEDIA_PLUGGED);
         } else {
-            if (sharedPreferences.getBoolean(Constants.CB_MEDIA_UNPLUGGED, true)) {
-                audioManager.setStreamVolume(
-                        AudioManager.STREAM_MUSIC,
-                        sharedPreferences.getInt(Constants.SKB_MEDIA_UNPLUGGED, 100),
-                        AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
+            setVolumeIfEnabled(Constants.CB_MEDIA_UNPLUGGED, AudioManager.STREAM_MUSIC, Constants.SKB_MEDIA_UNPLUGGED);
         }
     }
 
@@ -268,5 +221,12 @@ public class Operator {
         }
 
         return isServiceRunning;
+    }
+
+    // ---------------------------------------------
+    private void setVolumeIfEnabled(String spIsEnabled, int type, String spVolume) {
+        if (sharedPreferences.getBoolean(spIsEnabled, true)) {
+            audioManager.setStreamVolume(type, sharedPreferences.getInt(spVolume, Constants.MAX_VOLUME), AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        }
     }
 }

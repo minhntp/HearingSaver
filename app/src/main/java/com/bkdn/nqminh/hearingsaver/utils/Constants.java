@@ -52,6 +52,7 @@ public class Constants {
     public static final int DEFAULT_VOLUME_HEADPHONE = 3;
     public static final int DEFAULT_VOLUME_SPEAKER = 13;
     public static final int DEFAULT_VOLUME_SPEAKER_MEDIA = 5;
+    public static final int MAX_VOLUME = 15;
 
     // ---------------------------------------------------------------------------------------------
     // NOTIFICATION
