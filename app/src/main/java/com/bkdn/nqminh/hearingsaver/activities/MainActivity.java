@@ -1,10 +1,9 @@
 package com.bkdn.nqminh.hearingsaver.activities;
 
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +13,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.services.MyService;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
     private CheckBox checkboxRingtonePlugged;
     private CheckBox checkboxRingtoneUnplugged;
     private CheckBox checkboxNotificationPlugged;
@@ -56,32 +58,27 @@ public class MainActivity extends Activity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
+    private final ActivityResultLauncher<String> requestNotificationPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            String grantedLog = isGranted ? "is granted" : "is denied";
+            Toast.makeText(this, "Notification permission " + grantedLog, Toast.LENGTH_SHORT).show();
+        });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        askForPermissions();
+        checkPermissions();
         initialize();
     }
 
-    private void askForPermissions() {
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (!notificationManager.isNotificationPolicyAccessGranted()) {
-//            Toast.makeText(this, Constants.REQUEST_ACCESS_DO_NOT_DISTURB, Toast.LENGTH_LONG).show();
-
-            new AlertDialog.Builder(this)
-                    .setTitle(Constants.REQUEST_ACCESS_TITLE)
-                    .setMessage(Constants.REQUEST_ACCESS_DO_NOT_DISTURB)
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        // Start intent to setting activity
-                        Intent intent = new Intent(
-                                android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                        startActivity(intent);
-                    })
-                    .show();
+    private void checkPermissions() {
+        // Notification Permission
+        int notificationPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS);
+        if (notificationPermission == PackageManager.PERMISSION_DENIED) {
+            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
     }
 
@@ -381,19 +378,6 @@ public class MainActivity extends Activity {
         super.onDestroy();
 
         Log.d(Constants.DEBUG_TAG, "Main activity on destroy");
-//        Intent mainServiceIntent = new Intent(this, MyService.class);
-//        boolean isServiceStopped = stopService(mainServiceIntent);
-//        Log.d(Constants.DEBUG_TAG, "service stopped by MainActivity's onDestroy(): " + isServiceStopped);
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Default behavior: finish (destroy) the activity
-//        super.onBackPressed();
-
-        // Do nothing instead
-        moveTaskToBack(true);
     }
 }
 
