@@ -23,14 +23,9 @@ public class Operator {
     static public Operator getInstance(Context context) {
         if (instance == null) {
             instance = new Operator();
-//            instance.sharedPreferences = HearingSaver.getAppContext().getSharedPreferences(Constants.settingsData, Context.MODE_PRIVATE);
             instance.sharedPreferences = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
-
-//            instance.audioManager = (AudioManager) HearingSaver.getAppContext().getSystemService(Context.AUDIO_SERVICE);
             instance.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
             instance.activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-
         }
         return instance;
     }
@@ -43,45 +38,35 @@ public class Operator {
         return sharedPreferences.edit();
     }
 
-//    public int getHeadsetState() {
-//        return sharedPreferences.getInt(Constants.SP_HEADSET_STATE, -1);
-//    }
-
-//    public void setHeadsetState(int headsetState) {
-//        sharedPreferences.edit().putInt(Constants.SP_HEADSET_STATE, headsetState).apply();
-//    }
-
     public void setAllVolumesExceptMedia(boolean isPlugged) {
         if (isPlugged) {
-            setVolumeIfEnabled(Constants.CB_RING_PLUGGED, AudioManager.STREAM_RING, Constants.SKB_RING_PLUGGED);
-            setVolumeIfEnabled(Constants.CB_NOTI_PLUGGED, AudioManager.STREAM_NOTIFICATION, Constants.SKB_NOTI_PLUGGED);
-            setVolumeIfEnabled(Constants.CB_FEEDBACK_PLUGGED, AudioManager.STREAM_SYSTEM, Constants.SKB_FEEDBACK_PLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_RING_PLUGGED, AudioManager.STREAM_RING, Constants.SEEKBAR_RING_PLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_NOTIFICATION_PLUGGED, AudioManager.STREAM_NOTIFICATION, Constants.SEEKBAR_NOTIFICATION_PLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_FEEDBACK_PLUGGED, AudioManager.STREAM_SYSTEM, Constants.SEEKBAR_FEEDBACK_PLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_CALL_PLUGGED, AudioManager.STREAM_VOICE_CALL, Constants.SEEKBAR_CALL_PLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_ALARM_PLUGGED, AudioManager.STREAM_ALARM, Constants.SEEKBAR_ALARM_PLUGGED);
         } else {
-            setVolumeIfEnabled(Constants.CB_RING_UNPLUGGED, AudioManager.STREAM_RING, Constants.SKB_RING_UNPLUGGED);
-            setVolumeIfEnabled(Constants.CB_NOTI_UNPLUGGED, AudioManager.STREAM_NOTIFICATION, Constants.SKB_NOTI_UNPLUGGED);
-            setVolumeIfEnabled(Constants.CB_FEEDBACK_UNPLUGGED, AudioManager.STREAM_SYSTEM, Constants.SKB_FEEDBACK_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_RING_UNPLUGGED, AudioManager.STREAM_RING, Constants.SEEKBAR_RING_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_NOTIFICATION_UNPLUGGED, AudioManager.STREAM_NOTIFICATION, Constants.SEEKBAR_NOTIFICATION_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_FEEDBACK_UNPLUGGED, AudioManager.STREAM_SYSTEM, Constants.SEEKBAR_FEEDBACK_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_CALL_UNPLUGGED, AudioManager.STREAM_VOICE_CALL, Constants.SEEKBAR_CALL_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_ALARM_UNPLUGGED, AudioManager.STREAM_ALARM, Constants.SEEKBAR_ALARM_UNPLUGGED);
         }
     }
 
     public void setOnlyMediaVolume(boolean isPlugged) {
         if (isPlugged) {
-            setVolumeIfEnabled(Constants.CB_MEDIA_PLUGGED, AudioManager.STREAM_MUSIC, Constants.SKB_MEDIA_PLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_MEDIA_PLUGGED, AudioManager.STREAM_MUSIC, Constants.SEEKBAR_MEDIA_PLUGGED);
         } else {
-            setVolumeIfEnabled(Constants.CB_MEDIA_UNPLUGGED, AudioManager.STREAM_MUSIC, Constants.SKB_MEDIA_UNPLUGGED);
+            setVolumeIfEnabled(Constants.CHECKBOX_MEDIA_UNPLUGGED, AudioManager.STREAM_MUSIC, Constants.SEEKBAR_MEDIA_UNPLUGGED);
         }
     }
 
-    //    public void setPending(boolean isPending, boolean isPlugged) {
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean(Constants.settingsPending, isPending);
-//        editor.putBoolean(Constants.settingsPendingIsPlugged, isPlugged);
-//        editor.apply();
-//    }
     public void setPending(boolean isPending) {
-        sharedPreferences.edit().putBoolean(Constants.SETTINGS_PENDING, isPending).apply();
+        sharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_PENDING, isPending).apply();
     }
 
-    private final ArrayList<Integer> audioOutputDeviceTypes = new ArrayList<Integer>() {
+    private final ArrayList<Integer> audioOutputDeviceTypes = new ArrayList<>() {
         {
             add(AudioDeviceInfo.TYPE_WIRED_HEADSET);
             add(AudioDeviceInfo.TYPE_WIRED_HEADPHONES);
@@ -115,12 +100,12 @@ public class Operator {
 
         // This method will ALWAYS adjust volumes
 
-        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
+        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
             int pluggedDevices = countPluggedDevices();
 
-            getEditor().putBoolean(Constants.SP_POSTPONED_PLUG_STATE, (pluggedDevices > 0)).apply();
+            getEditor().putBoolean(Constants.SHARED_PREFERENCE_POSTPONED_PLUG_STATE, (pluggedDevices > 0)).apply();
 
             // Set Media volume first
             setOnlyMediaVolume(pluggedDevices > 0);
@@ -128,7 +113,7 @@ public class Operator {
             // Then set other Volumes
             int currentRingerMode = audioManager.getRingerMode();
             boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
-                    currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+                currentRingerMode == AudioManager.RINGER_MODE_SILENT;
 
             String silentModeMessage;
             setPending(isSilentOrVibrate);
@@ -142,10 +127,9 @@ public class Operator {
 
             // Show toast
             String toastMessage = getToastOnReceivedMessage(stateChangeTypeMessage, pluggedDevices)
-                    + "\n" + silentModeMessage;
+                + "\n" + silentModeMessage;
             Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show();
         }
-//        }
     }
 
     private String getToastOnReceivedMessage(String message, int pluggedDevices) {
@@ -181,36 +165,23 @@ public class Operator {
 
     public void adjustOnRingerModeChanged(Context context, int newRingerMode) {
 
-        boolean isPending = sharedPreferences.getBoolean(Constants.SETTINGS_PENDING, false);
+        boolean isPending = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_PENDING, false);
 
         if (isPending && (newRingerMode == AudioManager.RINGER_MODE_NORMAL)) {
-//            int currentRingerMode = Operator.getInstance(context).getAudioManager().getRingerMode();
-
-//            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
-//                    currentRingerMode == AudioManager.RINGER_MODE_SILENT;
-
-//            boolean isPlugged = Operator.getInstance(context).getAudioManager().isWiredHeadsetOn();
-
-//            if (isSilentOrVibrate) {
-
-            boolean isPlugged = sharedPreferences.getBoolean(Constants.SP_POSTPONED_PLUG_STATE, false);
-
+            boolean isPlugged = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_POSTPONED_PLUG_STATE, false);
             setAllVolumesExceptMedia(isPlugged);
-
             setPending(false);
 
             Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_LONG).show();
-//            }
         }
     }
 
-    @SuppressWarnings("deprecation")
     public boolean isServiceRunning() {
         boolean isServiceRunning = false;
 
         List<ActivityManager.RunningServiceInfo> runningServiceInfoList = activityManager.getRunningServices(1);
 
-        if ((runningServiceInfoList.size() > 0)) {
+        if (!runningServiceInfoList.isEmpty()) {
 
             String foundServiceClassName = runningServiceInfoList.get(0).service.getClassName();
             String mainServiceClassName = MyService.class.getName();
@@ -223,7 +194,6 @@ public class Operator {
         return isServiceRunning;
     }
 
-    // ---------------------------------------------
     private void setVolumeIfEnabled(String spIsEnabled, int type, String spVolume) {
         if (sharedPreferences.getBoolean(spIsEnabled, true)) {
             audioManager.setStreamVolume(type, sharedPreferences.getInt(spVolume, Constants.MAX_VOLUME), AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);

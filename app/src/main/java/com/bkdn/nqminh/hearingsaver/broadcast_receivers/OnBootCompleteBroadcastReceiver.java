@@ -28,12 +28,12 @@ public class OnBootCompleteBroadcastReceiver extends BroadcastReceiver {
 
             SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
 
-            boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SP_IS_SERVICE_ENABLED, false);
+            boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
 
-            if(isServiceEnabled) {
+            if (isServiceEnabled) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Constants.SP_IS_FIRST_RUN, true);
-                editor.putBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, false);
+                editor.putBoolean(Constants.SHARED_PREFERENCE_IS_FIRST_RUN, true);
+                editor.putBoolean(Constants.SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN, false);
                 editor.apply();
 
                 Intent myServiceIntent = new Intent(context, MyService.class);

@@ -49,22 +49,23 @@ public class MyService extends Service {
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent notificationPendingIntent = PendingIntent
-                .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Build notification
         Notification.Builder notificationBuilder = new Notification.Builder(this, Constants.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setSubText(getText(R.string.notification_message))
-//                .setContentTitle(getText(R.string.notification_title))
-//                .setContentText(getText(R.string.notification_message))
-                .setContentIntent(notificationPendingIntent)
-                .setOngoing(true);
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(getText(R.string.notification_title))
+            .setContentText(getText(R.string.notification_message))
+            .setOnlyAlertOnce(true)
+            .setShowWhen(false)
+            .setContentIntent(notificationPendingIntent)
+            .setOngoing(true);
 
         // Build channel
         NotificationChannel channel = new NotificationChannel(
-                Constants.CHANNEL_ID,
-                Constants.CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_MIN);
+            Constants.CHANNEL_ID,
+            Constants.CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_MIN);
         channel.setDescription(Constants.CHANNEL_DESCRIPTION);
 
         // Create/Register channel
@@ -80,12 +81,12 @@ public class MyService extends Service {
         Context context = getApplicationContext();
         SharedPreferences sharedPreferences = Operator.getInstance(context).getSharedPreferences();
 
-        boolean isFirstRun = sharedPreferences.getBoolean(Constants.SP_IS_FIRST_RUN, true);
-        boolean adjustedOnFirstRun = sharedPreferences.getBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, false);
+        boolean isFirstRun = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_FIRST_RUN, true);
+        boolean adjustedOnFirstRun = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN, false);
 
         if (isFirstRun && !adjustedOnFirstRun) {
             Operator.getInstance(context).handlePlugStateChange(context, Constants.MESSAGE_FIRST_RUN);
-            sharedPreferences.edit().putBoolean(Constants.SP_ADJUSTED_ON_FIRST_RUN, true).apply();
+            sharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN, true).apply();
         }
     }
 

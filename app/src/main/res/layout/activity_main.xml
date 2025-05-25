@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,26 +10,25 @@
         android:id="@+id/ringtone_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_and_bottom"
         android:text="@string/ringtone"
         android:textColor="@color/orange"
         android:textSize="@dimen/title_text"
-        android:layout_marginTop="@dimen/margin_top_and_bottom"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RINGTONE PLUGGED    -->
     <TextView
         android:id="@+id/ringtone_plugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="@dimen/title_margin_bottom"
         android:text="@string/plugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/title_margin_bottom"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ringtone_textview"
-        app:layout_constraintRight_toLeftOf="@id/ringtone_plugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/ringtone_plugged_checkbox"
+        app:layout_constraintTop_toBottomOf="@id/ringtone_textview" />
 
     <CheckBox
         android:id="@+id/ringtone_plugged_checkbox"
@@ -38,47 +36,46 @@
         android:layout_height="@dimen/text_container"
         android:layout_marginEnd="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/ringtone_plugged_textview"
-        app:layout_constraintTop_toTopOf="@id/ringtone_plugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/ringtone_unplugged_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/ringtone_unplugged_textview"
+        app:layout_constraintTop_toTopOf="@id/ringtone_plugged_textview" />
 
     <SeekBar
         android:id="@+id/ringtone_plugged_seekbar"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginBottom="@dimen/margin_between_vertical"
         android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/ringtone_plugged_textview"
-        app:layout_constraintTop_toBottomOf="@+id/ringtone_plugged_textview"
         app:layout_constraintRight_toLeftOf="@id/ringtone_plugged_volume_textview"
-        android:layout_marginBottom="@dimen/margin_between_vertical"/>
+        app:layout_constraintTop_toBottomOf="@+id/ringtone_plugged_textview" />
 
     <TextView
         android:id="@+id/ringtone_plugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
-        android:text="@string/zero"
         android:gravity="center"
+        android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        app:layout_constraintTop_toTopOf="@id/ringtone_plugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/ringtone_plugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/ringtone_plugged_checkbox" />
+        app:layout_constraintRight_toRightOf="@id/ringtone_plugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/ringtone_plugged_seekbar" />
 
-<!--    RINGTONE UNPLUGGED-->
     <TextView
         android:id="@+id/ringtone_unplugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_between_horizontal"
         android:text="@string/unplugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/ringtone_plugged_checkbox"
-        app:layout_constraintTop_toTopOf="@id/ringtone_plugged_checkbox"
-        app:layout_constraintRight_toLeftOf="@id/ringtone_unplugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/ringtone_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/ringtone_plugged_checkbox" />
 
     <CheckBox
         android:id="@+id/ringtone_unplugged_checkbox"
-        android:layout_height="@dimen/text_container"
         android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
         app:layout_constraintLeft_toRightOf="@id/ringtone_unplugged_textview"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/ringtone_unplugged_textview" />
@@ -86,23 +83,23 @@
     <SeekBar
         android:id="@+id/ringtone_unplugged_seekbar"
         android:layout_width="0dp"
-        android:max="@integer/seekbar_max"
         android:layout_height="@dimen/text_container"
-        app:layout_constraintTop_toBottomOf="@+id/ringtone_unplugged_textview"
+        android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/ringtone_unplugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/ringtone_unplugged_volume_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/ringtone_unplugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/ringtone_unplugged_textview" />
 
     <TextView
         android:id="@+id/ringtone_unplugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
+        android:gravity="center"
         android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@id/ringtone_unplugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/ringtone_unplugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/ringtone_unplugged_checkbox" />
-    
+        app:layout_constraintRight_toRightOf="@id/ringtone_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/ringtone_unplugged_seekbar" />
+
     <!-- NOTIFICATION-->
     <TextView
         android:id="@+id/notification_textview"
@@ -115,19 +112,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ringtone_plugged_seekbar" />
 
-    <!-- NOTIFICATION PLUGGED    -->
     <TextView
         android:id="@+id/notification_plugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="@dimen/title_margin_bottom"
         android:text="@string/plugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/title_margin_bottom"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notification_textview"
-        app:layout_constraintRight_toLeftOf="@id/notification_plugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/notification_plugged_checkbox"
+        app:layout_constraintTop_toBottomOf="@id/notification_textview" />
 
     <CheckBox
         android:id="@+id/notification_plugged_checkbox"
@@ -135,47 +131,46 @@
         android:layout_height="@dimen/text_container"
         android:layout_marginEnd="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/notification_plugged_textview"
-        app:layout_constraintTop_toTopOf="@id/notification_plugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/notification_unplugged_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/notification_unplugged_textview"
+        app:layout_constraintTop_toTopOf="@id/notification_plugged_textview" />
 
     <SeekBar
         android:id="@+id/notification_plugged_seekbar"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginBottom="@dimen/margin_between_vertical"
         android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/notification_plugged_textview"
-        app:layout_constraintTop_toBottomOf="@+id/notification_plugged_textview"
         app:layout_constraintRight_toLeftOf="@id/notification_plugged_volume_textview"
-        android:layout_marginBottom="@dimen/margin_between_vertical"/>
+        app:layout_constraintTop_toBottomOf="@+id/notification_plugged_textview" />
 
     <TextView
         android:id="@+id/notification_plugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
-        android:text="@string/zero"
         android:gravity="center"
+        android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        app:layout_constraintTop_toTopOf="@id/notification_plugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/notification_plugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/notification_plugged_checkbox" />
+        app:layout_constraintRight_toRightOf="@id/notification_plugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/notification_plugged_seekbar" />
 
-<!--    NOTIFICATION UNPLUGGED-->
     <TextView
         android:id="@+id/notification_unplugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_between_horizontal"
         android:text="@string/unplugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/notification_plugged_checkbox"
-        app:layout_constraintTop_toTopOf="@id/notification_plugged_checkbox"
-        app:layout_constraintRight_toLeftOf="@id/notification_unplugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/notification_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/notification_plugged_checkbox" />
 
     <CheckBox
         android:id="@+id/notification_unplugged_checkbox"
-        android:layout_height="@dimen/text_container"
         android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
         app:layout_constraintLeft_toRightOf="@id/notification_unplugged_textview"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/notification_unplugged_textview" />
@@ -183,49 +178,48 @@
     <SeekBar
         android:id="@+id/notification_unplugged_seekbar"
         android:layout_width="0dp"
-        android:max="@integer/seekbar_max"
         android:layout_height="@dimen/text_container"
-        app:layout_constraintTop_toBottomOf="@+id/notification_unplugged_textview"
+        android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/notification_unplugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/notification_unplugged_volume_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/notification_unplugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/notification_unplugged_textview" />
 
     <TextView
         android:id="@+id/notification_unplugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
-        android:text="@string/zero"
         android:gravity="center"
+        android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        app:layout_constraintTop_toTopOf="@id/notification_unplugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/notification_unplugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/notification_unplugged_checkbox" />
+        app:layout_constraintRight_toRightOf="@id/notification_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/notification_unplugged_seekbar" />
 
     <!-- TOUCH FEEDBACK AND SYSTEM-->
     <TextView
         android:id="@+id/feedback_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_between_vertical"
+        android:layout_marginBottom="@dimen/title_margin_bottom"
         android:text="@string/feedback"
         android:textColor="@color/orange"
         android:textSize="@dimen/title_text"
-        android:layout_marginBottom="@dimen/title_margin_bottom"
-        android:layout_marginTop="@dimen/margin_between_vertical"
-        app:layout_constraintTop_toBottomOf="@id/notification_plugged_seekbar"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notification_plugged_seekbar" />
 
-    <!-- TOUCH FEEDBACK AND SYSTEM PLUGGED    -->
     <TextView
         android:id="@+id/feedback_plugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="@dimen/title_margin_bottom"
         android:text="@string/plugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/title_margin_bottom"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feedback_textview"
-        app:layout_constraintRight_toLeftOf="@id/feedback_plugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/feedback_plugged_checkbox"
+        app:layout_constraintTop_toBottomOf="@id/feedback_textview" />
 
     <CheckBox
         android:id="@+id/feedback_plugged_checkbox"
@@ -233,47 +227,46 @@
         android:layout_height="@dimen/text_container"
         android:layout_marginEnd="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/feedback_plugged_textview"
-        app:layout_constraintTop_toTopOf="@id/feedback_plugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/feedback_unplugged_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/feedback_unplugged_textview"
+        app:layout_constraintTop_toTopOf="@id/feedback_plugged_textview" />
 
     <SeekBar
         android:id="@+id/feedback_plugged_seekbar"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginBottom="@dimen/margin_between_vertical"
         android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/feedback_plugged_textview"
-        app:layout_constraintTop_toBottomOf="@+id/feedback_plugged_textview"
         app:layout_constraintRight_toLeftOf="@id/feedback_plugged_volume_textview"
-        android:layout_marginBottom="@dimen/margin_between_vertical"/>
+        app:layout_constraintTop_toBottomOf="@+id/feedback_plugged_textview" />
 
     <TextView
         android:id="@+id/feedback_plugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
-        android:text="@string/zero"
         android:gravity="center"
+        android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        app:layout_constraintTop_toTopOf="@id/feedback_plugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/feedback_plugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/feedback_plugged_checkbox" />
+        app:layout_constraintRight_toRightOf="@id/feedback_plugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/feedback_plugged_seekbar" />
 
-<!--    TOUCH FEEDBACK AND SYSTEM UNPLUGGED-->
     <TextView
         android:id="@+id/feedback_unplugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_between_horizontal"
         android:text="@string/unplugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/feedback_plugged_checkbox"
-        app:layout_constraintTop_toTopOf="@id/feedback_plugged_checkbox"
-        app:layout_constraintRight_toLeftOf="@id/feedback_unplugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/feedback_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/feedback_plugged_checkbox" />
 
     <CheckBox
         android:id="@+id/feedback_unplugged_checkbox"
-        android:layout_height="@dimen/text_container"
         android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
         app:layout_constraintLeft_toRightOf="@id/feedback_unplugged_textview"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/feedback_unplugged_textview" />
@@ -281,49 +274,240 @@
     <SeekBar
         android:id="@+id/feedback_unplugged_seekbar"
         android:layout_width="0dp"
-        android:max="@integer/seekbar_max"
         android:layout_height="@dimen/text_container"
-        app:layout_constraintTop_toBottomOf="@+id/feedback_unplugged_textview"
+        android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/feedback_unplugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/feedback_unplugged_volume_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/feedback_unplugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/feedback_unplugged_textview" />
 
     <TextView
         android:id="@+id/feedback_unplugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
+        android:gravity="center"
         android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@id/feedback_unplugged_seekbar"
+        app:layout_constraintLeft_toLeftOf="@id/feedback_unplugged_checkbox"
         app:layout_constraintRight_toRightOf="@id/feedback_unplugged_checkbox"
-        app:layout_constraintLeft_toLeftOf="@id/feedback_unplugged_checkbox"/>
+        app:layout_constraintTop_toTopOf="@id/feedback_unplugged_seekbar" />
+
+    <!-- CALL -->
+    <TextView
+        android:id="@+id/call_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_between_vertical"
+        android:layout_marginBottom="@dimen/title_margin_bottom"
+        android:text="@string/call"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/title_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feedback_plugged_seekbar" />
+
+    <TextView
+        android:id="@+id/call_plugged_textview"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="@dimen/title_margin_bottom"
+        android:text="@string/plugged"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/call_plugged_checkbox"
+        app:layout_constraintTop_toBottomOf="@id/call_textview" />
+
+    <CheckBox
+        android:id="@+id/call_plugged_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginEnd="@dimen/margin_between_horizontal"
+        app:layout_constraintLeft_toRightOf="@id/call_plugged_textview"
+        app:layout_constraintRight_toLeftOf="@id/call_unplugged_textview"
+        app:layout_constraintTop_toTopOf="@id/call_plugged_textview" />
+
+    <SeekBar
+        android:id="@+id/call_plugged_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginBottom="@dimen/margin_between_vertical"
+        android:max="@integer/seekbar_max"
+        app:layout_constraintLeft_toLeftOf="@id/call_plugged_textview"
+        app:layout_constraintRight_toLeftOf="@id/call_plugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/call_plugged_textview" />
+
+    <TextView
+        android:id="@+id/call_plugged_volume_textview"
+        android:layout_width="@dimen/text_container"
+        android:layout_height="@dimen/text_container"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textSize="@dimen/volume_text"
+        app:layout_constraintLeft_toLeftOf="@id/call_plugged_checkbox"
+        app:layout_constraintRight_toRightOf="@id/call_plugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/call_plugged_seekbar" />
+
+    <TextView
+        android:id="@+id/call_unplugged_textview"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_between_horizontal"
+        android:text="@string/unplugged"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintLeft_toRightOf="@id/call_plugged_checkbox"
+        app:layout_constraintRight_toLeftOf="@id/call_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/call_plugged_checkbox" />
+
+    <CheckBox
+        android:id="@+id/call_unplugged_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
+        app:layout_constraintLeft_toRightOf="@id/call_unplugged_textview"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/call_unplugged_textview" />
+
+    <SeekBar
+        android:id="@+id/call_unplugged_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:max="@integer/seekbar_max"
+        app:layout_constraintLeft_toLeftOf="@id/call_unplugged_textview"
+        app:layout_constraintRight_toLeftOf="@id/call_unplugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/call_unplugged_textview" />
+
+    <TextView
+        android:id="@+id/call_unplugged_volume_textview"
+        android:layout_width="@dimen/text_container"
+        android:layout_height="@dimen/text_container"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textSize="@dimen/volume_text"
+        app:layout_constraintLeft_toLeftOf="@id/call_unplugged_checkbox"
+        app:layout_constraintRight_toRightOf="@id/call_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/call_unplugged_seekbar" />
+
+    <!-- ALARM -->
+    <TextView
+        android:id="@+id/alarm_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_between_vertical"
+        android:layout_marginBottom="@dimen/title_margin_bottom"
+        android:text="@string/alarm"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/title_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/call_plugged_seekbar" />
+
+    <TextView
+        android:id="@+id/alarm_plugged_textview"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="@dimen/title_margin_bottom"
+        android:text="@string/plugged"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/alarm_plugged_checkbox"
+        app:layout_constraintTop_toBottomOf="@id/alarm_textview" />
+
+    <CheckBox
+        android:id="@+id/alarm_plugged_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginEnd="@dimen/margin_between_horizontal"
+        app:layout_constraintLeft_toRightOf="@id/alarm_plugged_textview"
+        app:layout_constraintRight_toLeftOf="@id/alarm_unplugged_textview"
+        app:layout_constraintTop_toTopOf="@id/alarm_plugged_textview" />
+
+    <SeekBar
+        android:id="@+id/alarm_plugged_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginBottom="@dimen/margin_between_vertical"
+        android:max="@integer/seekbar_max"
+        app:layout_constraintLeft_toLeftOf="@id/alarm_plugged_textview"
+        app:layout_constraintRight_toLeftOf="@id/alarm_plugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_plugged_textview" />
+
+    <TextView
+        android:id="@+id/alarm_plugged_volume_textview"
+        android:layout_width="@dimen/text_container"
+        android:layout_height="@dimen/text_container"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textSize="@dimen/volume_text"
+        app:layout_constraintLeft_toLeftOf="@id/alarm_plugged_checkbox"
+        app:layout_constraintRight_toRightOf="@id/alarm_plugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/alarm_plugged_seekbar" />
+
+    <TextView
+        android:id="@+id/alarm_unplugged_textview"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_between_horizontal"
+        android:text="@string/unplugged"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintLeft_toRightOf="@id/alarm_plugged_checkbox"
+        app:layout_constraintRight_toLeftOf="@id/alarm_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/alarm_plugged_checkbox" />
+
+    <CheckBox
+        android:id="@+id/alarm_unplugged_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
+        app:layout_constraintLeft_toRightOf="@id/alarm_unplugged_textview"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/alarm_unplugged_textview" />
+
+    <SeekBar
+        android:id="@+id/alarm_unplugged_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_container"
+        android:max="@integer/seekbar_max"
+        app:layout_constraintLeft_toLeftOf="@id/alarm_unplugged_textview"
+        app:layout_constraintRight_toLeftOf="@id/alarm_unplugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_unplugged_textview" />
+
+    <TextView
+        android:id="@+id/alarm_unplugged_volume_textview"
+        android:layout_width="@dimen/text_container"
+        android:layout_height="@dimen/text_container"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textSize="@dimen/volume_text"
+        app:layout_constraintLeft_toLeftOf="@id/alarm_unplugged_checkbox"
+        app:layout_constraintRight_toRightOf="@id/alarm_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/alarm_unplugged_seekbar" />
 
     <!-- MEDIA -->
     <TextView
         android:id="@+id/media_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_between_vertical"
+        android:layout_marginBottom="@dimen/title_margin_bottom"
         android:text="@string/media"
         android:textColor="@color/orange"
         android:textSize="@dimen/title_text"
-        android:layout_marginTop="@dimen/margin_between_vertical"
-        android:layout_marginBottom="@dimen/title_margin_bottom"
-        app:layout_constraintTop_toBottomOf="@id/feedback_plugged_seekbar"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alarm_plugged_seekbar" />
 
-    <!-- MEDIA PLUGGED    -->
     <TextView
         android:id="@+id/media_plugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="@dimen/title_margin_bottom"
         android:text="@string/plugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/title_margin_bottom"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/media_textview"
-        app:layout_constraintRight_toLeftOf="@id/media_plugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/media_plugged_checkbox"
+        app:layout_constraintTop_toBottomOf="@id/media_textview" />
 
     <CheckBox
         android:id="@+id/media_plugged_checkbox"
@@ -331,47 +515,46 @@
         android:layout_height="@dimen/text_container"
         android:layout_marginEnd="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/media_plugged_textview"
-        app:layout_constraintTop_toTopOf="@id/media_plugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/media_unplugged_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/media_unplugged_textview"
+        app:layout_constraintTop_toTopOf="@id/media_plugged_textview" />
 
     <SeekBar
         android:id="@+id/media_plugged_seekbar"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginBottom="@dimen/margin_between_vertical"
         android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/media_plugged_textview"
-        app:layout_constraintTop_toBottomOf="@+id/media_plugged_textview"
         app:layout_constraintRight_toLeftOf="@id/media_plugged_volume_textview"
-        android:layout_marginBottom="@dimen/margin_between_vertical"/>
+        app:layout_constraintTop_toBottomOf="@+id/media_plugged_textview" />
 
     <TextView
         android:id="@+id/media_plugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
-        android:text="@string/zero"
         android:gravity="center"
+        android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        app:layout_constraintTop_toTopOf="@id/media_plugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/media_plugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/media_plugged_checkbox" />
+        app:layout_constraintRight_toRightOf="@id/media_plugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/media_plugged_seekbar" />
 
-<!--    MEDIA UNPLUGGED-->
     <TextView
         android:id="@+id/media_unplugged_textview"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_container"
+        android:layout_marginStart="@dimen/margin_between_horizontal"
         android:text="@string/unplugged"
         android:textColor="@color/black"
         android:textSize="@dimen/small_text"
-        android:layout_marginStart="@dimen/margin_between_horizontal"
         app:layout_constraintLeft_toRightOf="@id/media_plugged_checkbox"
-        app:layout_constraintTop_toTopOf="@id/media_plugged_checkbox"
-        app:layout_constraintRight_toLeftOf="@id/media_unplugged_checkbox"/>
+        app:layout_constraintRight_toLeftOf="@id/media_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/media_plugged_checkbox" />
 
     <CheckBox
         android:id="@+id/media_unplugged_checkbox"
-        android:layout_height="@dimen/text_container"
         android:layout_width="wrap_content"
+        android:layout_height="@dimen/text_container"
         app:layout_constraintLeft_toRightOf="@id/media_unplugged_textview"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/media_unplugged_textview" />
@@ -379,59 +562,60 @@
     <SeekBar
         android:id="@+id/media_unplugged_seekbar"
         android:layout_width="0dp"
-        android:max="@integer/seekbar_max"
         android:layout_height="@dimen/text_container"
-        app:layout_constraintTop_toBottomOf="@+id/media_unplugged_textview"
+        android:max="@integer/seekbar_max"
         app:layout_constraintLeft_toLeftOf="@id/media_unplugged_textview"
-        app:layout_constraintRight_toLeftOf="@id/media_unplugged_volume_textview"/>
+        app:layout_constraintRight_toLeftOf="@id/media_unplugged_volume_textview"
+        app:layout_constraintTop_toBottomOf="@+id/media_unplugged_textview" />
 
     <TextView
         android:id="@+id/media_unplugged_volume_textview"
         android:layout_width="@dimen/text_container"
         android:layout_height="@dimen/text_container"
+        android:gravity="center"
         android:text="@string/zero"
         android:textSize="@dimen/volume_text"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@id/media_unplugged_seekbar"
         app:layout_constraintLeft_toLeftOf="@id/media_unplugged_checkbox"
-        app:layout_constraintRight_toRightOf="@id/media_unplugged_checkbox" />
+        app:layout_constraintRight_toRightOf="@id/media_unplugged_checkbox"
+        app:layout_constraintTop_toTopOf="@id/media_unplugged_seekbar" />
 
-<!--    BUTTON -->
+    <!--    BUTTONS -->
     <Button
         android:id="@+id/save_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/save"
         android:layout_marginTop="@dimen/button_margin_top"
-        app:layout_constraintTop_toBottomOf="@id/media_plugged_seekbar"
+        android:text="@string/save"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/enable_button"/>
+        app:layout_constraintRight_toLeftOf="@id/enable_button"
+        app:layout_constraintTop_toBottomOf="@id/media_plugged_seekbar" />
 
     <Button
         android:id="@+id/enable_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/enable"
-        app:layout_constraintTop_toTopOf="@id/save_button"
         app:layout_constraintLeft_toRightOf="@id/save_button"
-        app:layout_constraintRight_toLeftOf="@id/disable_button"/>
+        app:layout_constraintRight_toLeftOf="@id/disable_button"
+        app:layout_constraintTop_toTopOf="@id/save_button" />
 
     <Button
         android:id="@+id/disable_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/disable"
-        app:layout_constraintTop_toTopOf="@id/save_button"
         app:layout_constraintLeft_toRightOf="@id/enable_button"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/save_button" />
 
-<!--    STATUS TEXTVIEWS-->
+    <!--    STATUS TEXTVIEWS-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/enable_button"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/enable_button">
+
         <TextView
             android:id="@+id/setting_status_textview"
             android:layout_width="match_parent"
@@ -439,7 +623,7 @@
             android:gravity="center"
             android:text="@string/setting_status"
             android:textColor="@color/blue"
-            android:textSize="@dimen/status_text"/>
+            android:textSize="@dimen/status_text" />
 
         <TextView
             android:id="@+id/service_status_textview"
@@ -449,7 +633,7 @@
             android:gravity="center"
             android:text="@string/service_status"
             android:textColor="@color/blue"
-            android:textSize="@dimen/status_text"/>
+            android:textSize="@dimen/status_text" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,48 +4,55 @@ public class Constants {
     // ---------------------------------------------------------------------------------------------    
     // SHARED PREFERENCES
     public static final String SETTINGS_DATA = "data";
-    public static final String SP_IS_SERVICE_ENABLED = "enabled";
-    public static final String SETTINGS_PENDING = "pending";
-    public static final String SKB_RING_PLUGGED = "volume1";
-    public static final String SKB_RING_UNPLUGGED = "volume2";
-    public static final String SKB_NOTI_PLUGGED = "volume3";
-    public static final String SKB_NOTI_UNPLUGGED = "volume4";
-    public static final String SKB_FEEDBACK_PLUGGED = "volume5";
-    public static final String SKB_FEEDBACK_UNPLUGGED = "volume6";
-    public static final String SKB_MEDIA_PLUGGED = "volume7";
-    public static final String SKB_MEDIA_UNPLUGGED = "volume8";
-    public static final String CB_RING_PLUGGED = "check1";
-    public static final String CB_RING_UNPLUGGED = "check2";
-    public static final String CB_NOTI_PLUGGED = "check3";
-    public static final String CB_NOTI_UNPLUGGED = "check4";
-    public static final String CB_FEEDBACK_PLUGGED = "check5";
-    public static final String CB_FEEDBACK_UNPLUGGED = "check6";
-    public static final String CB_MEDIA_PLUGGED = "check7";
-    public static final String CB_MEDIA_UNPLUGGED = "check8";
-    public static final String SP_IS_FIRST_RUN = "is-first-run";
-    public static final String SP_ADJUSTED_ON_FIRST_RUN = "adjusted-on-first-run";
-    public static final String SP_PREVIOUS_PLUG_STATE = "previous-plug-state ";
-    public static final String SP_POSTPONED_PLUG_STATE = "postponed-plug-state"; // Used for pending adjustments
+    public static final String SHARED_PREFERENCE_IS_SERVICE_ENABLED = "enabled";
+    public static final String SHARED_PREFERENCE_PENDING = "pending";
+    public static final String SHARED_PREFERENCE_IS_FIRST_RUN = "is-first-run";
+    public static final String SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN = "adjusted-on-first-run";
+    public static final String SHARED_PREFERENCE_PREVIOUS_PLUG_STATE = "previous-plug-state ";
+    public static final String SHARED_PREFERENCE_POSTPONED_PLUG_STATE = "postponed-plug-state"; // Used for pending adjustments
+
+    public static final String SEEKBAR_RING_PLUGGED = "volume_ring_plugged";
+    public static final String SEEKBAR_RING_UNPLUGGED = "volume_ring_unplugged";
+    public static final String SEEKBAR_NOTIFICATION_PLUGGED = "volume_notification_plugged";
+    public static final String SEEKBAR_NOTIFICATION_UNPLUGGED = "volume_notification_unplugged";
+    public static final String SEEKBAR_FEEDBACK_PLUGGED = "volume_feedback_plugged";
+    public static final String SEEKBAR_FEEDBACK_UNPLUGGED = "volume_feedback_unplugged";
+    public static final String SEEKBAR_CALL_PLUGGED = "volume_call_plugged";
+    public static final String SEEKBAR_CALL_UNPLUGGED = "volume_call_unplugged";
+    public static final String SEEKBAR_ALARM_PLUGGED = "volume_alarm_plugged";
+    public static final String SEEKBAR_ALARM_UNPLUGGED = "volume_alarm_unplugged";
+    public static final String SEEKBAR_MEDIA_PLUGGED = "volume_media_plugged";
+    public static final String SEEKBAR_MEDIA_UNPLUGGED = "volume_media_unplugged";
+
+    public static final String CHECKBOX_RING_PLUGGED = "enabled_ring_plugged";
+    public static final String CHECKBOX_RING_UNPLUGGED = "enabled_ring_unplugged";
+    public static final String CHECKBOX_NOTIFICATION_PLUGGED = "enabled_notification_plugged";
+    public static final String CHECKBOX_NOTIFICATION_UNPLUGGED = "enabled_notification_unplugged";
+    public static final String CHECKBOX_FEEDBACK_PLUGGED = "enabled_feedback_plugged";
+    public static final String CHECKBOX_FEEDBACK_UNPLUGGED = "enabled_feedback_unplugged";
+    public static final String CHECKBOX_CALL_PLUGGED = "enabled_call_plugged";
+    public static final String CHECKBOX_CALL_UNPLUGGED = "enabled_call_unplugged";
+    public static final String CHECKBOX_ALARM_PLUGGED = "enabled_alarm_plugged";
+    public static final String CHECKBOX_ALARM_UNPLUGGED = "enabled_alarm_unplugged";
+    public static final String CHECKBOX_MEDIA_PLUGGED = "enabled_media_plugged";
+    public static final String CHECKBOX_MEDIA_UNPLUGGED = "enabled_media_unplugged";
     // ---------------------------------------------------------------------------------------------
     // TOAST MESSAGES
-    public static final String TOAST_POSTPONE = "Phone is in silent or vibrate mode.\nPostponed adjustment!";
-    public static final String TOAST_VOLUME_ADJUSTED = "Volume adjusted!";
-    public static final String VOLUME_ADJUSTED_AFTER_POSTPONED = "Volume adjusted after postponed!";
-    public static final String SETTINGS_SAVED = "Settings saved!";
-    public static final String TOAST_ENABLE = "Settings saved.\nService enabled!";
-    public static final String TOAST_DISABLE = "Settings saved.\nService disabled!";
+    public static final String TOAST_POSTPONE = "Phone is in silent or vibrate mode\nVolume adjustment postponed";
+    public static final String TOAST_VOLUME_ADJUSTED = "Volume adjusted";
+    public static final String VOLUME_ADJUSTED_AFTER_POSTPONED = "Volume adjusted after postponed";
+    public static final String SETTINGS_SAVED = "Settings saved";
+    public static final String TOAST_ENABLE = "Settings saved";
+    public static final String TOAST_DISABLE = "Settings saved";
 
-    public static final String TOAST_ON_BOOT_COMPLETED = "Boot completed!\nStarting Hearing Saver...";
-    public static final String TOAST_JACK_DISCONNECTED = "Headphone jack is disconnected.";
-    public static final String TOAST_JACK_CONNECTED = "Headphone jack is connected.";
-    public static final String TOAST_BLUETOOTH_DISCONNECTED = "Bluetooth device is disconnected.";
-    public static final String TOAST_BLUETOOTH_CONNECTED = "Bluetooth device is connected.";
-    public static final String TOAST_ONE_DEVICE_CONNECTED = "One device is connected.";
-    public static final String TOAST_DEVICES_CONNECTED = " devices are connected.";
-    public static final String TOAST_NO_DEVICES_CONNECTED = "No device is connected.";
-
-    public static final String REQUEST_ACCESS_DO_NOT_DISTURB = "Please allow access to Do Not Disturb settings";
-    public static final String REQUEST_ACCESS_TITLE = "Allow access";
+    public static final String TOAST_ON_BOOT_COMPLETED = "Boot completed\nStarting Hearing Saver...";
+    public static final String TOAST_JACK_DISCONNECTED = "Headphone jack is disconnected";
+    public static final String TOAST_JACK_CONNECTED = "Headphone jack is connected";
+    public static final String TOAST_BLUETOOTH_DISCONNECTED = "Bluetooth device is disconnected";
+    public static final String TOAST_BLUETOOTH_CONNECTED = "Bluetooth device is connected";
+    public static final String TOAST_ONE_DEVICE_CONNECTED = "One device is connected";
+    public static final String TOAST_DEVICES_CONNECTED = " devices are connected";
+    public static final String TOAST_NO_DEVICES_CONNECTED = "No device is connected";
 
     // ---------------------------------------------------------------------------------------------
     // SETTINGS
