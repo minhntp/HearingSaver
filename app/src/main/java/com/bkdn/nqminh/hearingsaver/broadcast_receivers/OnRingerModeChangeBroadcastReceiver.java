@@ -17,7 +17,6 @@ public class OnRingerModeChangeBroadcastReceiver extends BroadcastReceiver {
             int newRingerMode = intent.getIntExtra(AudioManager.EXTRA_RINGER_MODE, -1);
 
             Operator.getInstance(context).adjustOnRingerModeChanged(context, newRingerMode);
-
         }
     }
 }

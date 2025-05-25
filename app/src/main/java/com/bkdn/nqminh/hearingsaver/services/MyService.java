@@ -11,14 +11,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnBluetoothBroadcastReceiver;
+import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnDestroyBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnPluggedBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangeBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
@@ -71,7 +74,7 @@ public class MyService extends Service {
         notificationManager.createNotificationChannel(channel);
 
         // Show notification
-        startForeground(Constants.NOTIFICATION_ID, notification);
+        startForeground(Constants.NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
     }
 
     private void adjustVolumesOnFirstRun() {
@@ -123,14 +126,15 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         Log.d(Constants.DEBUG_TAG, "Service onDestroy()");
+        Toast.makeText(this, "HearingSaver: Service is killed", Toast.LENGTH_SHORT).show();
         unregisterBroadcastReceivers();
 
-//        Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
-//        sendBroadcast(onDestroyBroadcastReceiverIntent);
-
-        super.onDestroy();
+        Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
+        sendBroadcast(onDestroyBroadcastReceiverIntent);
 
         isRunning = false;
+
+        super.onDestroy();
     }
 
     @Nullable

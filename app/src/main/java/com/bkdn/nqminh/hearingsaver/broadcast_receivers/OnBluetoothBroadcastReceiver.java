@@ -17,11 +17,10 @@ public class OnBluetoothBroadcastReceiver extends BroadcastReceiver {
 
             if (state == BluetoothAdapter.STATE_CONNECTED) {
                 Operator.getInstance(context)
-                        .handlePlugStateChange(context, Constants.MESSAGE_BLUETOOTH_CONNECTED);
-            }
-            if (state == BluetoothAdapter.STATE_DISCONNECTED) {
+                    .handlePlugStateChange(context, Constants.MESSAGE_BLUETOOTH_CONNECTED);
+            } else if (state == BluetoothAdapter.STATE_DISCONNECTED) {
                 Operator.getInstance(context)
-                        .handlePlugStateChange(context, Constants.MESSAGE_BLUETOOTH_DISCONNECTED);
+                    .handlePlugStateChange(context, Constants.MESSAGE_BLUETOOTH_DISCONNECTED);
             }
         }
     }
