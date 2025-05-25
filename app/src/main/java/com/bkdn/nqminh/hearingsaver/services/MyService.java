@@ -17,12 +17,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnBluetoothBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnPluggedBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangeBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
+import com.bkdn.nqminh.hearingsaver.utils.NotificationBuilder;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
 public class MyService extends Service {
@@ -56,30 +56,22 @@ public class MyService extends Service {
         PendingIntent notificationPendingIntent = PendingIntent
             .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Build notification
-        Notification.Builder notificationBuilder = new Notification.Builder(this, Constants.CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(getText(R.string.notification_title))
-            .setContentText(getText(R.string.notification_message))
-            .setOnlyAlertOnce(true)
-            .setShowWhen(false)
-            .setContentIntent(notificationPendingIntent)
-            .setOngoing(true);
-
-        // Build channel
+        // Build Notification Channel
         NotificationChannel channel = new NotificationChannel(
             Constants.CHANNEL_ID,
             Constants.CHANNEL_NAME,
             NotificationManager.IMPORTANCE_MIN);
         channel.setDescription(Constants.CHANNEL_DESCRIPTION);
 
+        // Build Notification
+        Notification notification = NotificationBuilder.getInstance().getNotification(this, notificationPendingIntent);
+
         // Create/Register channel
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
 
         // Show notification
-//        notificationManager.notify(Constants.NOTIFICATION_ID, notificationBuilder.build());
-        startForeground(Constants.NOTIFICATION_ID, notificationBuilder.build());
+        startForeground(Constants.NOTIFICATION_ID, notification);
     }
 
     private void adjustVolumesOnFirstRun() {

@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.services.MyService;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
+import com.bkdn.nqminh.hearingsaver.utils.NotificationBuilder;
 
 public class OnDestroyBroadcastReceiver extends BroadcastReceiver {
     static SharedPreferences settings;
@@ -25,20 +25,13 @@ public class OnDestroyBroadcastReceiver extends BroadcastReceiver {
         if (isServiceEnabled) {
             Log.d(Constants.DEBUG_TAG, "start service from OnDestroyBroadcastReceiver");
 
-            // Build and start service along with showing notification
+            // Build and start service along with show notification
             Intent myServiceIntent = new Intent(context, MyService.class);
             myServiceIntent.putExtra(Constants.INTENT_RESTART_SERVICE, true);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, myServiceIntent, PendingIntent.FLAG_IMMUTABLE);
 
-            Notification notification = new Notification.Builder(context, Constants.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(context.getText(R.string.notification_title))
-                .setContentText(context.getText(R.string.notification_message))
-                .setOnlyAlertOnce(true)
-                .setShowWhen(false)
-                .setContentIntent(pendingIntent)
-                .build();
+            Notification notification = NotificationBuilder.getInstance().getNotification(context, pendingIntent);
 
             ((Service) context).startForeground(Constants.NOTIFICATION_ID, notification);
         }
