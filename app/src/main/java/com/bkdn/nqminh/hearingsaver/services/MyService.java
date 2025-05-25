@@ -12,9 +12,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.bkdn.nqminh.hearingsaver.R;
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
@@ -25,6 +26,8 @@ import com.bkdn.nqminh.hearingsaver.utils.Constants;
 import com.bkdn.nqminh.hearingsaver.utils.Operator;
 
 public class MyService extends Service {
+    public static boolean isRunning = false;
+
     IntentFilter headsetReceiverFilter, bluetoothReceiverFilter, ringerModeReceiverFilter;
     OnPluggedBroadcastReceiver headsetBroadcastReceiver;
     OnRingerModeChangeBroadcastReceiver ringerModeBroadcastReceiver;
@@ -37,6 +40,8 @@ public class MyService extends Service {
         buildAndShowNotification();
         adjustVolumesOnFirstRun();
         registerBroadcastReceivers();
+
+        isRunning = true;
     }
 
     private void buildAndShowNotification() {
@@ -105,15 +110,9 @@ public class MyService extends Service {
         ringerModeReceiverFilter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         ringerModeBroadcastReceiver = new OnRingerModeChangeBroadcastReceiver();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
-            registerReceiver(bluetoothBroadcastReceiver, bluetoothReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
-            registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter);
-            registerReceiver(bluetoothBroadcastReceiver, bluetoothReceiverFilter);
-            registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter);
-        }
+        registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(bluetoothBroadcastReceiver, bluetoothReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     public void unregisterBroadcastReceivers() {
@@ -133,14 +132,18 @@ public class MyService extends Service {
     public void onDestroy() {
         Log.d(Constants.DEBUG_TAG, "Service onDestroy()");
         unregisterBroadcastReceivers();
+
 //        Intent onDestroyBroadcastReceiverIntent = new Intent(this, OnDestroyBroadcastReceiver.class);
 //        sendBroadcast(onDestroyBroadcastReceiverIntent);
+
         super.onDestroy();
+
+        isRunning = false;
     }
 
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 }
