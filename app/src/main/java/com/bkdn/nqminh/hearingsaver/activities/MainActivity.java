@@ -88,6 +88,13 @@ public class MainActivity extends FragmentActivity {
         initialize();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        showStatus();
+    }
+
     private void checkPermissions() {
         // Notification Permission
         int notificationPermission =
@@ -113,8 +120,6 @@ public class MainActivity extends FragmentActivity {
             startForegroundService(mainServiceIntent);
             Log.d(Constants.DEBUG_TAG, "started service from main activity");
         }
-
-        showStatus();
     }
 
     private void connectViews() {

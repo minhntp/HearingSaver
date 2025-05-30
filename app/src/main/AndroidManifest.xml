@@ -42,17 +42,6 @@
             android:label="RestartServiceWhenStopped" />
 
         <receiver
-            android:name=".broadcast_receivers.OnPluggedBroadcastReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-
-        <receiver
-            android:name=".broadcast_receivers.OnBluetoothBroadcastReceiver"
-            android:enabled="true"
-            android:exported="false" />
-
-        <receiver
             android:name=".broadcast_receivers.OnBootCompleteBroadcastReceiver"
             android:exported="false">
             <intent-filter>

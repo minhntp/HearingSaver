@@ -1,22 +1,68 @@
 package com.bkdn.nqminh.hearingsaver.utils;
 
+import static android.media.AudioDeviceInfo.TYPE_AUX_LINE;
+import static android.media.AudioDeviceInfo.TYPE_BLE_HEADSET;
+import static android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER;
+import static android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP;
+import static android.media.AudioDeviceInfo.TYPE_BLUETOOTH_SCO;
+import static android.media.AudioDeviceInfo.TYPE_BUILTIN_EARPIECE;
+import static android.media.AudioDeviceInfo.TYPE_BUILTIN_MIC;
+import static android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER;
+import static android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER_SAFE;
+import static android.media.AudioDeviceInfo.TYPE_HDMI;
+import static android.media.AudioDeviceInfo.TYPE_HEARING_AID;
+import static android.media.AudioDeviceInfo.TYPE_LINE_ANALOG;
+import static android.media.AudioDeviceInfo.TYPE_LINE_DIGITAL;
+import static android.media.AudioDeviceInfo.TYPE_TELEPHONY;
+import static android.media.AudioDeviceInfo.TYPE_USB_ACCESSORY;
+import static android.media.AudioDeviceInfo.TYPE_USB_DEVICE;
+import static android.media.AudioDeviceInfo.TYPE_USB_HEADSET;
+import static android.media.AudioDeviceInfo.TYPE_WIRED_HEADPHONES;
+import static android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.bkdn.nqminh.hearingsaver.services.MyService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Operator {
     private SharedPreferences sharedPreferences;
     private AudioManager audioManager;
     private ActivityManager activityManager;
+
+    private final Set<Integer> builtInSpeakerTypes = Set.of(TYPE_BUILTIN_EARPIECE, TYPE_BUILTIN_SPEAKER, TYPE_BUILTIN_SPEAKER_SAFE, TYPE_BUILTIN_MIC, TYPE_TELEPHONY);
+
+    private final static Map<Integer, String> deviceTypes;
+
+    static {
+        deviceTypes = Map.ofEntries(
+            Map.entry(TYPE_WIRED_HEADSET, "Wired headset"),
+            Map.entry(TYPE_WIRED_HEADPHONES, "Wired headphones"),
+            Map.entry(TYPE_LINE_ANALOG, "Line analog"),
+            Map.entry(TYPE_LINE_DIGITAL, "Line digital"),
+            Map.entry(TYPE_BLUETOOTH_SCO, "Bluetooth SCO"),
+            Map.entry(TYPE_BLUETOOTH_A2DP, "Bluetooth A2DP"),
+            Map.entry(TYPE_HDMI, "HDMI"),
+            Map.entry(TYPE_USB_DEVICE, "USB device"),
+            Map.entry(TYPE_USB_ACCESSORY, "USB accessory"),
+            Map.entry(TYPE_AUX_LINE, "AUX line"),
+            Map.entry(TYPE_USB_HEADSET, "USB headset"),
+            Map.entry(TYPE_HEARING_AID, "Hearing aid"),
+            Map.entry(TYPE_BLE_HEADSET, "BLE headset"),
+            Map.entry(TYPE_BLE_SPEAKER, "BLE speaker")
+        );
+    }
 
     private static Operator instance;
 
@@ -26,6 +72,8 @@ public class Operator {
             instance.sharedPreferences = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
             instance.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             instance.activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+            instance.registerAudioCallbacks(context);
         }
         return instance;
     }
@@ -54,7 +102,7 @@ public class Operator {
         }
     }
 
-    public void setOnlyMediaVolume(boolean isPlugged) {
+    public void setMediaVolume(boolean isPlugged) {
         if (isPlugged) {
             setVolumeIfEnabled(Constants.CHECKBOX_MEDIA_PLUGGED, AudioManager.STREAM_MUSIC, Constants.SEEKBAR_MEDIA_PLUGGED);
         } else {
@@ -66,54 +114,17 @@ public class Operator {
         sharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_PENDING, isPending).apply();
     }
 
-    private final ArrayList<Integer> audioOutputDeviceTypes = new ArrayList<>() {
-        {
-            add(AudioDeviceInfo.TYPE_WIRED_HEADSET);
-            add(AudioDeviceInfo.TYPE_WIRED_HEADPHONES);
-            add(AudioDeviceInfo.TYPE_BLUETOOTH_SCO);
-        }
-    };
-
-    public int countPluggedDevices() {
-        int count = 0;
-
-        AudioDeviceInfo[] outputDevices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-
-        for (AudioDeviceInfo deviceInfo : outputDevices) {
-            if (audioOutputDeviceTypes.contains(deviceInfo.getType())) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public void handlePlugStateChange(Context context, String stateChangeTypeMessage) {
-        Log.d(Constants.DEBUG_TAG, "adjusting volumes with message: " + stateChangeTypeMessage);
-
-        // MESSAGE TYPE
-        //  wire unplugged
-        //  wire plugged
-        //  bluetooth disconnected
-        //  bluetooth connected
-        //  first run: from MyService - on first time enable service OR on boot complete
-        // (FOR BOTH WIRED AND BLUETOOTH AUDIO DEVICES)
-
-        // This method will ALWAYS adjust volumes
+    public void handlePlugStateChange(Context context) {
+        boolean isOutputConnected = isOutputDeviceConnected(context, audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
 
         boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
-            int pluggedDevices = countPluggedDevices();
+            setMediaVolume(isOutputConnected);
 
-            getEditor().putBoolean(Constants.SHARED_PREFERENCE_POSTPONED_PLUG_STATE, (pluggedDevices > 0)).apply();
-
-            // Set Media volume first
-            setOnlyMediaVolume(pluggedDevices > 0);
-
-            // Then set other Volumes
+            // Set other Volumes
             int currentRingerMode = audioManager.getRingerMode();
-            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE ||
-                currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE || currentRingerMode == AudioManager.RINGER_MODE_SILENT;
 
             String silentModeMessage;
             setPending(isSilentOrVibrate);
@@ -121,55 +132,19 @@ public class Operator {
             if (isSilentOrVibrate) {
                 silentModeMessage = Constants.TOAST_POSTPONE;
             } else {
-                setAllVolumesExceptMedia(pluggedDevices > 0);
+                setAllVolumesExceptMedia(isOutputConnected);
                 silentModeMessage = Constants.TOAST_VOLUME_ADJUSTED;
             }
 
-            // Show toast
-            String toastMessage = getToastOnReceivedMessage(stateChangeTypeMessage, pluggedDevices)
-                + "\n" + silentModeMessage;
-            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, silentModeMessage, Toast.LENGTH_LONG).show();
         }
-    }
-
-    private String getToastOnReceivedMessage(String message, int pluggedDevices) {
-        String toast;
-        switch (message) {
-            case Constants.MESSAGE_WIRE_UNPLUGGED:
-                toast = Constants.TOAST_JACK_DISCONNECTED;
-                break;
-            case Constants.MESSAGE_WIRE_PLUGGED:
-                toast = Constants.TOAST_JACK_CONNECTED;
-                break;
-            case Constants.MESSAGE_BLUETOOTH_DISCONNECTED:
-                toast = Constants.TOAST_BLUETOOTH_DISCONNECTED;
-                break;
-            case Constants.MESSAGE_BLUETOOTH_CONNECTED:
-                toast = Constants.TOAST_BLUETOOTH_CONNECTED;
-                break;
-            case Constants.MESSAGE_FIRST_RUN:
-                if (pluggedDevices > 1) {
-                    toast = pluggedDevices + Constants.TOAST_DEVICES_CONNECTED;
-                } else if (pluggedDevices == 1) {
-                    toast = Constants.TOAST_ONE_DEVICE_CONNECTED;
-                } else {
-                    toast = Constants.TOAST_NO_DEVICES_CONNECTED;
-                }
-                break;
-            default:
-                toast = "";
-        }
-
-        return toast;
     }
 
     public void adjustOnRingerModeChanged(Context context, int newRingerMode) {
-
         boolean isPending = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_PENDING, false);
 
         if (isPending && (newRingerMode == AudioManager.RINGER_MODE_NORMAL)) {
-            boolean isPlugged = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_POSTPONED_PLUG_STATE, false);
-            setAllVolumesExceptMedia(isPlugged);
+            setAllVolumesExceptMedia(isOutputDeviceConnected(context, audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)));
             setPending(false);
 
             Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_LONG).show();
@@ -182,7 +157,6 @@ public class Operator {
         List<ActivityManager.RunningServiceInfo> runningServiceInfoList = activityManager.getRunningServices(1);
 
         if (!runningServiceInfoList.isEmpty()) {
-
             String foundServiceClassName = runningServiceInfoList.get(0).service.getClassName();
             String mainServiceClassName = MyService.class.getName();
 
@@ -198,5 +172,38 @@ public class Operator {
         if (sharedPreferences.getBoolean(spIsEnabled, true)) {
             audioManager.setStreamVolume(type, sharedPreferences.getInt(spVolume, Constants.MAX_VOLUME), AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         }
+    }
+
+    private void registerAudioCallbacks(Context context) {
+        AudioDeviceCallback audioDeviceCallback = new AudioDeviceCallback() {
+            @Override
+            public void onAudioDevicesAdded(AudioDeviceInfo[] addedDevices) {
+                super.onAudioDevicesAdded(addedDevices);
+                handlePlugStateChange(context);
+            }
+
+            @Override
+            public void onAudioDevicesRemoved(AudioDeviceInfo[] removedDevices) {
+                super.onAudioDevicesRemoved(removedDevices);
+                handlePlugStateChange(context);
+            }
+        };
+
+        audioManager.registerAudioDeviceCallback(audioDeviceCallback, new Handler(Looper.getMainLooper()));
+    }
+
+    private boolean isOutputDeviceConnected(Context context, AudioDeviceInfo[] devices) {
+        for (AudioDeviceInfo device : devices) {
+            if (device.isSink()) {
+                int type = device.getType();
+                if (!builtInSpeakerTypes.contains(type)) {
+                    Toast.makeText(context, "Connected device: " + deviceTypes.get(type), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            }
+        }
+
+        Toast.makeText(context, "No output device connected", Toast.LENGTH_SHORT).show();
+        return false;
     }
 }

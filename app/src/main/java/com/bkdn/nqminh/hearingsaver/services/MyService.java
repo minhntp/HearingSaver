@@ -1,12 +1,10 @@
 package com.bkdn.nqminh.hearingsaver.services;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -20,9 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.bkdn.nqminh.hearingsaver.activities.MainActivity;
-import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnBluetoothBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnDestroyBroadcastReceiver;
-import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnPluggedBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.broadcast_receivers.OnRingerModeChangeBroadcastReceiver;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
 import com.bkdn.nqminh.hearingsaver.utils.NotificationBuilder;
@@ -31,10 +27,8 @@ import com.bkdn.nqminh.hearingsaver.utils.Operator;
 public class MyService extends Service {
     public static boolean isRunning = false;
 
-    IntentFilter headsetReceiverFilter, bluetoothReceiverFilter, ringerModeReceiverFilter;
-    OnPluggedBroadcastReceiver headsetBroadcastReceiver;
+    IntentFilter ringerModeReceiverFilter;
     OnRingerModeChangeBroadcastReceiver ringerModeBroadcastReceiver;
-    OnBluetoothBroadcastReceiver bluetoothBroadcastReceiver;
 
     @Override
     public void onCreate() {
@@ -85,35 +79,21 @@ public class MyService extends Service {
         boolean adjustedOnFirstRun = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN, false);
 
         if (isFirstRun && !adjustedOnFirstRun) {
-            Operator.getInstance(context).handlePlugStateChange(context, Constants.MESSAGE_FIRST_RUN);
+            Operator.getInstance(context).handlePlugStateChange(context);
             sharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN, true).apply();
         }
     }
 
-
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private void registerBroadcastReceivers() {
-        // HEADSET_PLUG Broadcast Receiver
-        headsetReceiverFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
-        headsetBroadcastReceiver = new OnPluggedBroadcastReceiver();
-
-        // BLUETOOTH Broadcast Receiver
-        bluetoothReceiverFilter = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-        bluetoothBroadcastReceiver = new OnBluetoothBroadcastReceiver();
-
         // RINGER_MODE_CHANGED Broadcast Receiver
         ringerModeReceiverFilter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         ringerModeBroadcastReceiver = new OnRingerModeChangeBroadcastReceiver();
 
-        registerReceiver(headsetBroadcastReceiver, headsetReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
-        registerReceiver(bluetoothBroadcastReceiver, bluetoothReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
         registerReceiver(ringerModeBroadcastReceiver, ringerModeReceiverFilter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     public void unregisterBroadcastReceivers() {
-        unregisterReceiver(headsetBroadcastReceiver);
         unregisterReceiver(ringerModeBroadcastReceiver);
-        unregisterReceiver(bluetoothBroadcastReceiver);
     }
 
     @Override

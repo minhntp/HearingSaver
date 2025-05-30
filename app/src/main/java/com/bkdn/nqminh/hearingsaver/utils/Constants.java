@@ -8,8 +8,6 @@ public class Constants {
     public static final String SHARED_PREFERENCE_PENDING = "pending";
     public static final String SHARED_PREFERENCE_IS_FIRST_RUN = "is-first-run";
     public static final String SHARED_PREFERENCE_ADJUSTED_ON_FIRST_RUN = "adjusted-on-first-run";
-    public static final String SHARED_PREFERENCE_PREVIOUS_PLUG_STATE = "previous-plug-state ";
-    public static final String SHARED_PREFERENCE_POSTPONED_PLUG_STATE = "postponed-plug-state"; // Used for pending adjustments
 
     public static final String SEEKBAR_RING_PLUGGED = "volume_ring_plugged";
     public static final String SEEKBAR_RING_UNPLUGGED = "volume_ring_unplugged";
@@ -38,21 +36,14 @@ public class Constants {
     public static final String CHECKBOX_MEDIA_UNPLUGGED = "enabled_media_unplugged";
     // ---------------------------------------------------------------------------------------------
     // TOAST MESSAGES
-    public static final String TOAST_POSTPONE = "Phone is in silent or vibrate mode\nVolume adjustment postponed";
-    public static final String TOAST_VOLUME_ADJUSTED = "Volume adjusted";
-    public static final String VOLUME_ADJUSTED_AFTER_POSTPONED = "Volume adjusted after postponed";
+    public static final String TOAST_POSTPONE = "Volumes adjustment postponed in Silent mode";
+    public static final String TOAST_VOLUME_ADJUSTED = "Volumes adjusted";
+    public static final String VOLUME_ADJUSTED_AFTER_POSTPONED = "Volumes adjusted after postponed";
     public static final String SETTINGS_SAVED = "Settings saved";
     public static final String TOAST_ENABLE = "Settings saved";
     public static final String TOAST_DISABLE = "Settings saved";
 
     public static final String TOAST_ON_BOOT_COMPLETED = "Boot completed\nStarting Hearing Saver...";
-    public static final String TOAST_JACK_DISCONNECTED = "Headphone jack is disconnected";
-    public static final String TOAST_JACK_CONNECTED = "Headphone jack is connected";
-    public static final String TOAST_BLUETOOTH_DISCONNECTED = "Bluetooth device is disconnected";
-    public static final String TOAST_BLUETOOTH_CONNECTED = "Bluetooth device is connected";
-    public static final String TOAST_ONE_DEVICE_CONNECTED = "One device is connected";
-    public static final String TOAST_DEVICES_CONNECTED = " devices are connected";
-    public static final String TOAST_NO_DEVICES_CONNECTED = "No device is connected";
 
     // ---------------------------------------------------------------------------------------------
     // SETTINGS
@@ -75,13 +66,5 @@ public class Constants {
     // ---------------------------------------------------------------------------------------------
     // TAG
     public static final String DEBUG_TAG = "dbg";
-
-    // MESSAGES BETWEEN CLASSES
-    public static final String MESSAGE_WIRE_PLUGGED = "wire-plugged";
-    public static final String MESSAGE_WIRE_UNPLUGGED = "wire-unplugged";
-    public static final String MESSAGE_BLUETOOTH_CONNECTED = "bluetooth-plugged";
-    public static final String MESSAGE_BLUETOOTH_DISCONNECTED = "bluetooth-unplugged";
-    public static final String MESSAGE_FIRST_RUN = "first-run";
-
 
 }
