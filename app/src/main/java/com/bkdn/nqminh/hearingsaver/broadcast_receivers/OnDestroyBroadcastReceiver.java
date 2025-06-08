@@ -11,21 +11,20 @@ import com.bkdn.nqminh.hearingsaver.services.MyService;
 import com.bkdn.nqminh.hearingsaver.utils.Constants;
 
 public class OnDestroyBroadcastReceiver extends BroadcastReceiver {
-    static SharedPreferences settings;
+    public static final String ACTION = "com.bkdn.nqminh.hearingsaver.ON_SERVICE_DESTROYED";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        settings = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
+        SharedPreferences settings = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
         boolean isServiceEnabled = settings.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
             Log.d(Constants.DEBUG_TAG, "start service from OnDestroyBroadcastReceiver");
-            Toast.makeText(context, "HearingSaver: Restarting Service...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Service is killed by System. Restarting...", Toast.LENGTH_SHORT).show();
 
             // Build and start service along with show notification
             Intent myServiceIntent = new Intent(context, MyService.class);
-            myServiceIntent.putExtra(Constants.INTENT_RESTART_SERVICE, true);
-
+            myServiceIntent.setAction(ACTION);
             context.startForegroundService(myServiceIntent);
         }
     }

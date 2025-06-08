@@ -16,8 +16,7 @@ public class OnBootCompleteBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             // If service is enabled:
             //   acts like first time of enabling the service:
             //   Set shared preferences: IS_FIRST_RUN to true

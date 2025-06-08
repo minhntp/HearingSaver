@@ -36,12 +36,10 @@ public class Constants {
     public static final String CHECKBOX_MEDIA_UNPLUGGED = "enabled_media_unplugged";
     // ---------------------------------------------------------------------------------------------
     // TOAST MESSAGES
-    public static final String TOAST_POSTPONE = "Volumes adjustment postponed in Silent mode";
+    public static final String TOAST_POSTPONE = "Silent mode, postponed";
     public static final String TOAST_VOLUME_ADJUSTED = "Volumes adjusted";
     public static final String VOLUME_ADJUSTED_AFTER_POSTPONED = "Volumes adjusted after postponed";
     public static final String SETTINGS_SAVED = "Settings saved";
-    public static final String TOAST_ENABLE = "Settings saved";
-    public static final String TOAST_DISABLE = "Settings saved";
 
     public static final String TOAST_ON_BOOT_COMPLETED = "Boot completed\nStarting Hearing Saver...";
 
@@ -58,10 +56,6 @@ public class Constants {
     public static final String CHANNEL_ID = "hearing-saver-notification-channel";
     public static final String CHANNEL_NAME = "Main notification channel";
     public static final String CHANNEL_DESCRIPTION = "Shows status of Hearing Saver";
-
-    // ---------------------------------------------------------------------------------------------
-    // INTENT MESSAGE
-    public static final String INTENT_RESTART_SERVICE = "restart-service-from-destroyed-state";
 
     // ---------------------------------------------------------------------------------------------
     // TAG

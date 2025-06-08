@@ -378,12 +378,12 @@ public class MainActivity extends FragmentActivity {
 
         buttonEnable.setOnClickListener(view -> {
             handleServiceStateChange(true);
-            Toast.makeText(this, Constants.TOAST_ENABLE, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Constants.SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
         });
 
         buttonDisable.setOnClickListener(view -> {
             handleServiceStateChange(false);
-            Toast.makeText(this, Constants.TOAST_DISABLE, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Constants.SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
         });
 
         buttonSave.setOnClickListener(view -> {
