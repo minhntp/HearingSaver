@@ -30,14 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 public class Operator {
-    private SharedPreferences sharedPreferences;
-    private AudioManager audioManager;
-    private ActivityManager activityManager;
-
-    private final static Map<Integer, String> deviceTypes;
+    private static final Map<Integer, String> DEVICE_TYPES;
+    private static final int COOLDOWN_TIME = 1000;
 
     static {
-        deviceTypes = Map.ofEntries(
+        DEVICE_TYPES = Map.ofEntries(
             Map.entry(TYPE_AUX_LINE, "AUX line"),
             Map.entry(TYPE_BLE_HEADSET, "BLE headset"),
             Map.entry(TYPE_BLE_SPEAKER, "BLE speaker"),
@@ -55,24 +52,33 @@ public class Operator {
         );
     }
 
+    private final SharedPreferences mSharedPreferences;
+    private final AudioManager mAudioManager;
+    private final ActivityManager mActivityManager;
+    private long lastStateChangePlugged = 0;
+    private long lastStateChangeUnplugged = 0;
+
     private static Operator instance;
+
+    private Operator(Context context) {
+        mSharedPreferences = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    }
 
     static public Operator getInstance(Context context) {
         if (instance == null) {
-            instance = new Operator();
-            instance.sharedPreferences = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
-            instance.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            instance.activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            instance = new Operator(context);
         }
         return instance;
     }
 
     public SharedPreferences getSharedPreferences() {
-        return sharedPreferences;
+        return mSharedPreferences;
     }
 
     public SharedPreferences.Editor getEditor() {
-        return sharedPreferences.edit();
+        return mSharedPreferences.edit();
     }
 
     public void setAllVolumesExceptMedia(boolean isPlugged) {
@@ -100,23 +106,41 @@ public class Operator {
     }
 
     public void setPending(boolean isPending) {
-        sharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_PENDING, isPending).apply();
+        mSharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_PENDING, isPending).apply();
     }
 
     public void handlePlugStateChange(Context context) {
-        int connectedType = isOutputDeviceConnected(audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
+        int connectedType = isOutputDeviceConnected(mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
         boolean isOutputConnected = (connectedType >= 0);
+
+        long now = System.currentTimeMillis();
+        boolean stop = false;
+        if (isOutputConnected) {
+            if (now - lastStateChangePlugged < COOLDOWN_TIME) {
+                stop = true;
+            }
+            lastStateChangePlugged = now;
+        } else {
+            if (now - lastStateChangeUnplugged < COOLDOWN_TIME) {
+                stop = true;
+            }
+            lastStateChangeUnplugged = now;
+        }
+        if (stop) {
+            return;
+        }
+
         String connectedToast = isOutputConnected ?
-            "Connected device: " + deviceTypes.get(connectedType) :
+            "Connected device: " + DEVICE_TYPES.get(connectedType) :
             "No output device connected";
 
-        boolean isServiceEnabled = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
+        boolean isServiceEnabled = mSharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
 
         if (isServiceEnabled) {
             setSilentVolumes(isOutputConnected);
 
             // Set other Volumes
-            int currentRingerMode = audioManager.getRingerMode();
+            int currentRingerMode = mAudioManager.getRingerMode();
             boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE || currentRingerMode == AudioManager.RINGER_MODE_SILENT;
 
             StringBuilder silentModeMessage = new StringBuilder(connectedToast).append('\n');
@@ -129,27 +153,27 @@ public class Operator {
                 silentModeMessage.append(Constants.TOAST_VOLUME_ADJUSTED);
             }
 
-            Toast.makeText(context, silentModeMessage, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, silentModeMessage, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void adjustOnRingerModeChanged(Context context, int newRingerMode) {
-        boolean isPending = sharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_PENDING, false);
+        boolean isPending = mSharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_PENDING, false);
 
         if (isPending && (newRingerMode == AudioManager.RINGER_MODE_NORMAL)) {
-            int connectedType = isOutputDeviceConnected(audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
+            int connectedType = isOutputDeviceConnected(mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
             boolean isOutputConnected = (connectedType >= 0);
             setAllVolumesExceptMedia(isOutputConnected);
             setPending(false);
 
-            Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, Constants.VOLUME_ADJUSTED_AFTER_POSTPONED, Toast.LENGTH_SHORT).show();
         }
     }
 
     public boolean isServiceRunning() {
         boolean isServiceRunning = false;
 
-        List<ActivityManager.RunningServiceInfo> runningServiceInfoList = activityManager.getRunningServices(1);
+        List<ActivityManager.RunningServiceInfo> runningServiceInfoList = mActivityManager.getRunningServices(1);
 
         if (!runningServiceInfoList.isEmpty()) {
             String foundServiceClassName = runningServiceInfoList.get(0).service.getClassName();
@@ -164,16 +188,16 @@ public class Operator {
     }
 
     public void registerAudioCallback(AudioDeviceCallback callback, Handler handler) {
-        audioManager.registerAudioDeviceCallback(callback, handler);
+        mAudioManager.registerAudioDeviceCallback(callback, handler);
     }
 
     public void unregisterAudioCallback(AudioDeviceCallback callback) {
-        audioManager.unregisterAudioDeviceCallback(callback);
+        mAudioManager.unregisterAudioDeviceCallback(callback);
     }
 
     private void setOneVolume(String spIsEnabled, int type, String spVolume) {
-        if (sharedPreferences.getBoolean(spIsEnabled, true)) {
-            audioManager.setStreamVolume(type, sharedPreferences.getInt(spVolume, Constants.MAX_VOLUME), AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        if (mSharedPreferences.getBoolean(spIsEnabled, true)) {
+            mAudioManager.setStreamVolume(type, mSharedPreferences.getInt(spVolume, Constants.MAX_VOLUME), AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         }
     }
 
@@ -181,7 +205,7 @@ public class Operator {
         for (AudioDeviceInfo device : devices) {
             if (device.isSink()) {
                 int type = device.getType();
-                if (deviceTypes.containsKey(type)) {
+                if (DEVICE_TYPES.containsKey(type)) {
                     return type;
                 }
             }

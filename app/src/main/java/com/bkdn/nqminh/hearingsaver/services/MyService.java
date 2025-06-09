@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -160,7 +159,6 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         Log.d(Constants.DEBUG_TAG, "Service onDestroy()");
-        Toast.makeText(mContext, "Service onDestroy", Toast.LENGTH_SHORT).show();
         unregisterBroadcastReceivers();
 
         Operator.getInstance(mContext).unregisterAudioCallback(mAudioDeviceCallback);
