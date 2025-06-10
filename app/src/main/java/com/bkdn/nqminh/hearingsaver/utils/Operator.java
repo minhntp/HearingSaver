@@ -31,7 +31,12 @@ import java.util.Map;
 
 public class Operator {
     private static final Map<Integer, String> DEVICE_TYPES;
+    private static Operator instance;
+    private final SharedPreferences mSharedPreferences;
+    private final AudioManager mAudioManager;
+    private final ActivityManager mActivityManager;
     private String lastDeviceAddress = "";
+    private long lastStateChangeUnplugged = 0;
 
     static {
         DEVICE_TYPES = Map.ofEntries(
@@ -51,14 +56,6 @@ public class Operator {
             Map.entry(TYPE_WIRED_HEADSET, "Wired headset")
         );
     }
-
-    private final SharedPreferences mSharedPreferences;
-    private final AudioManager mAudioManager;
-    private final ActivityManager mActivityManager;
-    private final long lastStateChangePlugged = 0;
-    private final long lastStateChangeUnplugged = 0;
-
-    private static Operator instance;
 
     private Operator(Context context) {
         mSharedPreferences = context.getSharedPreferences(Constants.SETTINGS_DATA, Context.MODE_PRIVATE);
@@ -121,13 +118,19 @@ public class Operator {
             isOutputConnected = true;
         } else {
             lastDeviceAddress = "";
+
+            long now = System.currentTimeMillis();
+            if ((now - lastStateChangeUnplugged) < 1000L) {
+                return;
+            }
+
+            lastStateChangeUnplugged = now;
             isOutputConnected = false;
         }
 
         String connectedToast = isOutputConnected ?
             "Connected device: " + DEVICE_TYPES.get(connectedDevice.getType()) :
             "No output device connected";
-
 
         setSilentVolumes(isOutputConnected);
 
