@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="app_name">24sp</dimen>
     <dimen name="status_text">20sp</dimen>
-    <dimen name="title_text">18sp</dimen>
+    <dimen name="title_text">17sp</dimen>
     <dimen name="volume_text">16sp</dimen>
     <dimen name="text_container">21sp</dimen>
     <dimen name="small_text">15sp</dimen>

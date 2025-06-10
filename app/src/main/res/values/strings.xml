@@ -6,7 +6,7 @@
     <string name="status_service_disabled">Service is disabled</string>
     <string name="status_service_enabled">Service is enabled</string>
     <string name="status_service_running">Service is running</string>
-    <string name="status_service_not_running">Service is not running!</string>
+    <string name="status_service_not_running">Service is not running</string>
 
     <string name="plugged">Plugged</string>
     <string name="unplugged">Unplugged</string>

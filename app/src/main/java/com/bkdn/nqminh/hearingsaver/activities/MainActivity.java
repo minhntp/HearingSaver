@@ -405,7 +405,7 @@ public class MainActivity extends FragmentActivity {
 
         if (isServiceEnabled) {
             textViewSettingStatus.setText(R.string.status_service_enabled);
-            textViewSettingStatus.setTextColor(getColor(R.color.blue));
+            textViewSettingStatus.setTextColor(getColor(R.color.status));
             buttonEnable.setEnabled(false);
             buttonDisable.setEnabled(true);
         } else {
@@ -417,7 +417,7 @@ public class MainActivity extends FragmentActivity {
 
         if (Operator.getInstance(getApplicationContext()).isServiceRunning()) {
             textViewServiceStatus.setText(R.string.status_service_running);
-            textViewServiceStatus.setTextColor(getColor(R.color.blue));
+            textViewServiceStatus.setTextColor(getColor(R.color.status));
         } else {
             textViewServiceStatus.setText(R.string.status_service_not_running);
             textViewServiceStatus.setTextColor(Color.RED);
