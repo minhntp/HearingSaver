@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class Operator {
     private static final Map<Integer, String> DEVICE_TYPES;
-    private static final int COOLDOWN_TIME = 1000;
+    private String lastDeviceAddress = "";
 
     static {
         DEVICE_TYPES = Map.ofEntries(
@@ -55,8 +55,8 @@ public class Operator {
     private final SharedPreferences mSharedPreferences;
     private final AudioManager mAudioManager;
     private final ActivityManager mActivityManager;
-    private long lastStateChangePlugged = 0;
-    private long lastStateChangeUnplugged = 0;
+    private final long lastStateChangePlugged = 0;
+    private final long lastStateChangeUnplugged = 0;
 
     private static Operator instance;
 
@@ -105,64 +105,56 @@ public class Operator {
         }
     }
 
-    public void setPending(boolean isPending) {
-        mSharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_PENDING, isPending).apply();
-    }
-
     public void handlePlugStateChange(Context context) {
-        int connectedType = isOutputDeviceConnected(mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
-        boolean isOutputConnected = (connectedType >= 0);
-
-        long now = System.currentTimeMillis();
-        boolean stop = false;
-        if (isOutputConnected) {
-            if (now - lastStateChangePlugged < COOLDOWN_TIME) {
-                stop = true;
-            }
-            lastStateChangePlugged = now;
-        } else {
-            if (now - lastStateChangeUnplugged < COOLDOWN_TIME) {
-                stop = true;
-            }
-            lastStateChangeUnplugged = now;
-        }
-        if (stop) {
+        if (!isServiceEnabled()) {
             return;
         }
 
+        AudioDeviceInfo connectedDevice = getConnectedDevice(mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
+        boolean isOutputConnected;
+
+        if (connectedDevice != null) {
+            if (lastDeviceAddress.equals(connectedDevice.getAddress())) {
+                return;
+            }
+            lastDeviceAddress = connectedDevice.getAddress();
+            isOutputConnected = true;
+        } else {
+            lastDeviceAddress = "";
+            isOutputConnected = false;
+        }
+
         String connectedToast = isOutputConnected ?
-            "Connected device: " + DEVICE_TYPES.get(connectedType) :
+            "Connected device: " + DEVICE_TYPES.get(connectedDevice.getType()) :
             "No output device connected";
 
-        boolean isServiceEnabled = mSharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
 
-        if (isServiceEnabled) {
-            setSilentVolumes(isOutputConnected);
+        setSilentVolumes(isOutputConnected);
 
-            // Set other Volumes
-            int currentRingerMode = mAudioManager.getRingerMode();
-            boolean isSilentOrVibrate = currentRingerMode == AudioManager.RINGER_MODE_VIBRATE || currentRingerMode == AudioManager.RINGER_MODE_SILENT;
+        // Set other Volumes
+        int currentRingerMode = mAudioManager.getRingerMode();
+        boolean isSilentOrVibrate = (currentRingerMode == AudioManager.RINGER_MODE_VIBRATE) ||
+            (currentRingerMode == AudioManager.RINGER_MODE_SILENT);
 
-            StringBuilder silentModeMessage = new StringBuilder(connectedToast).append('\n');
-            setPending(isSilentOrVibrate);
+        StringBuilder silentModeMessage = new StringBuilder(connectedToast).append('\n');
+        setPending(isSilentOrVibrate);
 
-            if (isSilentOrVibrate) {
-                silentModeMessage.append(Constants.TOAST_POSTPONE);
-            } else {
-                setAllVolumesExceptMedia(isOutputConnected);
-                silentModeMessage.append(Constants.TOAST_VOLUME_ADJUSTED);
-            }
-
-            Toast.makeText(context, silentModeMessage, Toast.LENGTH_SHORT).show();
+        if (isSilentOrVibrate) {
+            silentModeMessage.append(Constants.TOAST_POSTPONE);
+        } else {
+            setAllVolumesExceptMedia(isOutputConnected);
+            silentModeMessage.append(Constants.TOAST_VOLUME_ADJUSTED);
         }
+
+        Toast.makeText(context, silentModeMessage, Toast.LENGTH_SHORT).show();
     }
 
     public void adjustOnRingerModeChanged(Context context, int newRingerMode) {
-        boolean isPending = mSharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_PENDING, false);
+        boolean isPending = getPending();
 
         if (isPending && (newRingerMode == AudioManager.RINGER_MODE_NORMAL)) {
-            int connectedType = isOutputDeviceConnected(mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
-            boolean isOutputConnected = (connectedType >= 0);
+            AudioDeviceInfo connectedDevice = getConnectedDevice(mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS));
+            boolean isOutputConnected = (connectedDevice != null);
             setAllVolumesExceptMedia(isOutputConnected);
             setPending(false);
 
@@ -201,15 +193,27 @@ public class Operator {
         }
     }
 
-    private int isOutputDeviceConnected(AudioDeviceInfo[] devices) {
+    private boolean getPending() {
+        return mSharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_PENDING, false);
+    }
+
+    private void setPending(boolean isPending) {
+        mSharedPreferences.edit().putBoolean(Constants.SHARED_PREFERENCE_PENDING, isPending).apply();
+    }
+
+    private boolean isServiceEnabled() {
+        return mSharedPreferences.getBoolean(Constants.SHARED_PREFERENCE_IS_SERVICE_ENABLED, false);
+    }
+
+    private AudioDeviceInfo getConnectedDevice(AudioDeviceInfo[] devices) {
         for (AudioDeviceInfo device : devices) {
             if (device.isSink()) {
                 int type = device.getType();
                 if (DEVICE_TYPES.containsKey(type)) {
-                    return type;
+                    return device;
                 }
             }
         }
-        return -1;
+        return null;
     }
 }

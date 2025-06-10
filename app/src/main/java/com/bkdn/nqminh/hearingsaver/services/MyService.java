@@ -116,14 +116,12 @@ public class MyService extends Service {
                 @Override
                 public void onAudioDevicesAdded(AudioDeviceInfo[] addedDevices) {
                     Log.d(TAG, "onAudioDevicesAdded");
-                    super.onAudioDevicesAdded(addedDevices);
                     Operator.getInstance(mContext).handlePlugStateChange(mContext);
                 }
 
                 @Override
                 public void onAudioDevicesRemoved(AudioDeviceInfo[] removedDevices) {
                     Log.d(TAG, "onAudioDevicesRemoved");
-                    super.onAudioDevicesRemoved(removedDevices);
                     Operator.getInstance(mContext).handlePlugStateChange(mContext);
                 }
             };
